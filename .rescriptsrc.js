@@ -3,7 +3,7 @@ const webpackConfig = require("./webpack.config");
 
 module.exports = [
 	["use-babel-config", ".babelrc"],
-	"rescript-disable-eslint",
+	["use-eslint-config", "package"],
 	{
 		jest: (config) => {
 			let result = Object.assign({}, config, jestConfig);
@@ -17,7 +17,6 @@ module.exports = [
 			webpack.optimization.runtimeChunk = webpackConfig.optimization.runtimeChunk;
 			webpack.output.filename = webpackConfig.output.filename;
 			webpack.resolve.alias = Object.assign({}, webpack.resolve.alias, webpackConfig.resolve.alias);
-
 			return webpack;
 		}
 	}

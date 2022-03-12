@@ -1,4 +1,5 @@
 // eslint-disable-next-line filenames/match-regex
+require("./electron/ipc.js");
 const electron = require("electron");
 const path = require("path");
 const url = require("url");
@@ -22,7 +23,10 @@ function createWindow() {
 	mainWindow = new BrowserWindow({
 		width: 800,
 		height: 600,
-		webPreferences: { nodeIntegration: true }
+		webPreferences: {
+			nodeIntegration: true,
+			preload: path.join(__dirname, "electron", "preload.js")
+		}
 	});
 	// eslint-disable-next-line no-console,no-process-env
 	console.log("process.env.ELECTRON_START_URL", process.env.ELECTRON_START_URL);

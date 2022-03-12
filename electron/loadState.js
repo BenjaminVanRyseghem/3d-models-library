@@ -23,5 +23,8 @@ module.exports = {
 	},
 	getAllTags() {
 		return tagsPromise;
+	},
+	getAllEntities() {
+		return entitiesPromise;
 	}
 };

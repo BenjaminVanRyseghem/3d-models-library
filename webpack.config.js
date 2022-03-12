@@ -36,7 +36,6 @@ module.exports = {
 	},
 	resolve: {
 		alias: {
-			react: path.resolve("./node_modules/react")
 		},
 		modules: [
 			path.resolve(process.cwd(), "src"),
