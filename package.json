@@ -1,6 +1,10 @@
 {
   "name": "3d-models-library",
   "version": "0.1.0",
+  "main": "./electron-starter.js",
+  "bin": {
+    "3d-library": "./cli/index.js"
+  },
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.2",
@@ -11,11 +15,15 @@
     "react-scripts": "5.0.0",
     "web-vitals": "^2.1.4"
   },
+  "homepage": "./",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "rescripts start",
+    "build": "rescripts build",
+    "test": "rescripts test",
+    "lint": "npx eslint src",
+    "eject": "react-scripts eject",
+    "electron": "electron .",
+    "dev": "PORT=3000 nf start"
   },
   "eslintConfig": {
     "extends": [
@@ -34,5 +42,40 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "branches": 90,
+        "functions": 90,
+        "lines": 90,
+        "statements": 90
+      }
+    },
+    "coverageReporters": [
+      "html"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.5",
+    "@babel/eslint-parser": "^7.17.0",
+    "@babel/plugin-proposal-class-properties": "^7.16.7",
+    "@rescripts/cli": "^0.0.16",
+    "@rescripts/rescript-env": "^0.0.12",
+    "babel-jest": "^27.5.1",
+    "babel-loader": "^8.2.3",
+    "babel-plugin-rewire": "^1.2.0",
+    "electron": "^17.1.2",
+    "electron-builder": "^22.14.13",
+    "eslint-config-benjamin-van-ryseghem": "^1.1.0",
+    "eslint-import-resolver-webpack": "^0.13.2",
+    "eslint-plugin-flowtype": "^8.0.3",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "foreman": "^3.0.1",
+    "jest-config": "^27.5.1",
+    "rescript-disable-eslint": "^1.0.2"
+  },
+  "rescripts": [
+    "env"
+  ]
 }
