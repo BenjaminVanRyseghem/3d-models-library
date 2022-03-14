@@ -1,4 +1,8 @@
-const { getFiles } = require("../backend/database.js");
+const { getData } = require("../backend/database.js");
+const {
+	filterEntities,
+	fuzzyMatchName
+} = require("../backend/filterEntities.js");
 
 function buildOutput(humanReadable) {
 	if (humanReadable) {
@@ -9,60 +13,45 @@ function buildOutput(humanReadable) {
 	return (object) => { console.log(JSON.stringify(object,)); };
 }
 
-function searchFiltersAndKinds(entity, tags, kinds) {
-	let remainingTags = entity.tags ? tags.filter((tag) => entity.tags.indexOf(tag) === -1) : tags;
-
-	let remainingKinds = { ...kinds };
-	delete remainingKinds[entity.kind];
-
-	return {
-		remainingTags,
-		remainingKinds
-	};
-}
-
-function filterEntities(entities, { tags, kinds }) {
+function flattenEntities(entities) {
 	let result = [];
 	entities.forEach((entity) => {
-		let {
-			remainingTags,
-			remainingKinds
-		} = searchFiltersAndKinds(entity, tags, kinds);
-
-		if (!remainingTags.length && !remainingKinds.length) {
-			result.push(entity);
-		}
-		result.push(...filterEntities(entity.children, {
-			tags: remainingTags,
-			kinds: remainingKinds
-		}));
+		result.push(entity);
+		result.push(...flattenEntities(entity.children));
 	});
 
 	return result;
 }
+
 async function search(opts) {
 	let output = buildOutput(opts.human);
 
-	let allFiles = await getFiles(opts.root);
+	let dbData = await getData(opts.root);
 
 	if (opts.tag && opts.tag.length === 1) {
-		output(allFiles.tags[opts.tag[0]]);
+		output(fuzzyMatchName(dbData.tags[opts.tag[0]], opts.name));
 		return;
 	}
 
 	if (opts.kind && opts.kind.length === 1) {
-		output(allFiles.kinds[opts.kind[0]]);
+		output(fuzzyMatchName(dbData.kinds[opts.kind[0]], opts.name));
 		return;
 	}
 
 	if (opts.tag || opts.kind) {
-		output(filterEntities(allFiles.entities, {
+		output(fuzzyMatchName(filterEntities(dbData.entities, {
 			tags: opts.tag,
 			kinds: opts.kind
-		}));
+		}), opts.name));
 		return;
 	}
-	output(allFiles.entities);
+
+	if (opts.name) {
+		output(fuzzyMatchName(flattenEntities(dbData.entities), opts.name));
+		return;
+	}
+
+	output(dbData.entities);
 }
 
 module.exports = search;

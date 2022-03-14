@@ -1,14 +1,30 @@
 import "./index.scss";
-import App from "./app/app.js";
+import {
+	BrowserRouter,
+	Route,
+	Routes
+} from "react-router-dom";
+import Entity from "pages/entity/entity.js";
+import Home from "pages/home/home.js";
+import Layout from "components/layout/layout.js";
 import React from "react";
 import ReactDOM from "react-dom";
 import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById("root")
+	<React.StrictMode>
+		<BrowserRouter>
+			<Routes>
+				<Route element={<Layout/>} path="/">
+					<Route index element={<Home/>}/>
+					<Route path="entity">
+						<Route element={<Entity/>} path=":id"/>
+					</Route>
+				</Route>
+			</Routes>
+		</BrowserRouter>
+	</React.StrictMode>,
+	document.getElementById("root")
 );
 
 /*

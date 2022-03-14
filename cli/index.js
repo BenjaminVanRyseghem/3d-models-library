@@ -14,6 +14,7 @@ program.command("search")
 	.option("-h, --human", "make the output human readable")
 	.option("-t, --tag <string...>", "filter by tag(s)")
 	.option("-k, --kind <string...>", "filter by kind(s)")
+	.option("-n, --name <string>", "filter by name (fuzzy)")
 	.action(search);
 program.command("import")
 	.argument("<folder>", "folder to import")

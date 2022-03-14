@@ -3,7 +3,7 @@ const path = require("path");
 const inquirer = require("inquirer");
 
 const modelExtensions = [".stl", ".lys", ".ctb", ".obj"];
-const pictureExtensions = [".png", ".jpg", ".jpeg"];
+const pictureExtensions = [".png", ".jpg", ".jpeg", ".webp"];
 const archiveExtensions = [".zip", ".7z", ".tar.gz"];
 
 async function getInfo(dir) {
@@ -50,11 +50,11 @@ let confirmImport = (folderPath) => ({
 	type: "confirm"
 });
 
-const noModels = (models) => ({
+const noModels = (models, archives) => ({
 	message: "This folder has no model files. Are you sure?",
 	name: "confirm-no-model",
 	type: "confirm",
-	default: false,
+	default: archives.length,
 	when: (hash) => hash["confirm-import"] && !models.length
 });
 
@@ -94,6 +94,10 @@ const chooseKind = {
 			value: "miniature"
 		},
 		{
+			name: "Statue",
+			value: "statue"
+		},
+		{
 			name: "Bust",
 			value: "bust"
 		},
@@ -117,7 +121,7 @@ const chooseTags = {
 	when: (hash) => hash["confirm-import"] && hash["confirm-no-model"] !== false
 };
 
-const chooseTypes = {
+const chooseTypes = (models, archives) => ({
 	message: "What types of models are present?",
 	name: "types",
 	type: "checkbox",
@@ -135,10 +139,10 @@ const chooseTypes = {
 			value: "lys"
 		}
 	],
-	when: (hash) => hash["confirm-import"] && hash["confirm-no-model"] !== false
-};
+	when: (hash) => (models.length || archives.length) && hash["confirm-import"] && hash["confirm-no-model"] !== false
+});
 
-async function importFolder(folder, opts) {
+async function importFolder(folder) {
 	let folderPath = path.resolve(process.cwd(), folder);
 	let {
 		models,
@@ -149,13 +153,13 @@ async function importFolder(folder, opts) {
 	inquirer
 		.prompt([
 			confirmImport(folderPath),
-			noModels(models),
+			noModels(models, archives),
 			noArchives(archives),
 			choosePicture(pictures),
 			chooseName(getLastItem(folder)),
 			chooseKind,
 			chooseTags,
-			chooseTypes
+			chooseTypes(models, archives)
 		])
 		.then((answers) => {
 			let data = {

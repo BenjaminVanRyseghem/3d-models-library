@@ -42,12 +42,13 @@ function traverseFolder({ dir, tags, kinds }) {
 				}));
 		}
 		return dirent.isDirectory()
-			? getFiles(res)
+			? getData(res)
 			: Promise.resolve(null);
 	};
 }
 
-async function getFiles(dir) {
+// eslint-disable-next-line max-statements
+async function getData(dir) {
 	let newTags = {};
 	let newKinds = {};
 	let dirents = await readdir(dir, { withFileTypes: true });
@@ -76,6 +77,8 @@ async function getFiles(dir) {
 		}
 	});
 
+	allEntities = allEntities.sort((one, another) => (one.name < another.name ? -1 : 1));
+
 	let local = allEntities.find((each) => each?.local);
 
 	if (local) {
@@ -101,5 +104,5 @@ async function getFiles(dir) {
 }
 
 module.exports = {
-	getFiles
+	getData
 };

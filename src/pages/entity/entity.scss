@@ -1,0 +1,22 @@
+.entity {
+  .image {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+
+    img {
+      height: 300px;
+      top: 0;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
+  .back {
+    cursor: pointer;
+    text-align: center;
+    margin-top: 2ch;
+    padding-bottom: 2ch;
+  }
+}

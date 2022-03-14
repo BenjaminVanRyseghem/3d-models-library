@@ -1,24 +1,46 @@
 // eslint-disable-next-line filenames/match-exported
-const { getFiles } = require("../backend/database.js");
+const { getData } = require("../backend/database.js");
+const { v4: uuidv4 } = require("uuid");
 
-const root = "/Users/benjamin/Documents/3d models/stl/untitled folder 2";
+const root = "/Users/benjamin/Documents/3d models";
 
 let resolveEntitiesPromise = () => {};
+let resolveEntitiesAsMapPromise = () => {};
 let resolveTagsPromise = () => {};
 
 let entitiesPromise = new Promise((resolve) => {
 	resolveEntitiesPromise = resolve;
 });
 
+let entitiesAsMapPromise = new Promise((resolve) => {
+	resolveEntitiesAsMapPromise = resolve;
+});
+
 let tagsPromise = new Promise((resolve) => {
 	resolveTagsPromise = resolve;
 });
 
+function appendToMap(entity, map = {}) {
+	entity.id ??= uuidv4();
+	map[entity.id] = entity;
+
+	entity.children.forEach((child) => {
+		appendToMap(child, map);
+	});
+}
+
 module.exports = {
 	init() {
-		return getFiles(root).then(({ entities, tags }) => {
+		return getData(root).then(({ entities, tags }) => {
 			resolveTagsPromise(tags);
 			resolveEntitiesPromise(entities);
+
+			let entitiesMap = {};
+			entities.forEach((entity) => {
+				appendToMap(entity, entitiesMap);
+			});
+
+			resolveEntitiesAsMapPromise(entitiesMap);
 		});
 	},
 	getAllTags() {
@@ -26,5 +48,8 @@ module.exports = {
 	},
 	getAllEntities() {
 		return entitiesPromise;
+	},
+	getEntity(id) {
+		return entitiesAsMapPromise.then((map) => map[id]);
 	}
 };
