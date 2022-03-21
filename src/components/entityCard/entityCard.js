@@ -1,13 +1,12 @@
 import "./entityCard.scss";
-import { useLocation, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function EntityCard({ entity }) {
 	let navigate = useNavigate();
-	let location = useLocation();
 	return <div className="entityCard" onClick={() => {
-		navigate(`/entity/${entity.id}?from=${location.pathname}`);
+		navigate(`/entity/${entity.id}`);
 	}}>
 		<div className="image">
 			{entity.picture &&
@@ -16,6 +15,10 @@ export default function EntityCard({ entity }) {
 		</div>
 		<div className="content">
 			<div className="name">{entity.name}</div>
+			<div className="tags">
+				{entity.tags.map((tag) => <div key={tag} className="tag">{tag}</div>)}
+			</div>
+			<div className="children">{!!entity.children.length && `${entity.children.length} children`}</div>
 		</div>
 	</div>;
 }

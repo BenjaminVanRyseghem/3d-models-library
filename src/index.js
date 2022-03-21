@@ -1,4 +1,5 @@
 import "./index.scss";
+import "./dev.js";
 import {
 	BrowserRouter,
 	Route,
