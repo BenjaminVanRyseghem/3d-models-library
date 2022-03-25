@@ -1,0 +1,120 @@
+.entityCard {
+  --card-background-color-l: var(--background-color-l);
+  --card-background-color: hsl(var(--background-color-h), var(--background-color-s), var(--card-background-color-l));
+
+  --border-color-h: 0;
+  --border-color-s: 0%;
+  --border-color-l: 40%;
+  --border-color: hsl(var(--border-color-h), var(--border-color-s), var(--border-color-l));
+
+  --transition-size: 20px;
+  --transition-size--: calc(var(--transition-size) * -1);
+  --border-size: 1px;
+  --border-size--: calc(var(--border-size) * -1);
+
+  cursor: pointer;
+  color: var(--color);
+
+  position: relative;
+  width: 300px;
+  height: 300px;
+  font-size: 30px;
+
+  &:hover {
+    --card-background-color-l: 10%;
+    --border-color-l: 30%;
+    --color: #4FC1EF;
+  }
+
+  & .cover {
+    position: absolute;
+    background: #222;
+
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    &:empty {
+      border-left: var(--border-color) solid var(--border-color);
+      border-right: var(--border-color) solid var(--border-color);
+      border-top: var(--border-color) solid var(--border-color);
+    }
+
+    &:not(:empty):hover {
+      z-index: 10;
+    }
+
+    & img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  & .content {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    background: var(--card-background-color);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    border: 1px solid var(--border-color);
+    border-top: 0;
+
+    &:before {
+      position: absolute;
+      content: " ";
+      top: var(--transition-size--);
+      height: var(--transition-size);
+      left: var(--border-size--);
+      right: var(--border-size--);
+      background: linear-gradient(to top, var(--card-background-color), transparent, transparent);
+      border-left: var(--border-color) solid;
+      border-right: var(--border-color) solid;
+      border-image-slice: 1;
+      border-image-source: linear-gradient(to top, var(--border-color), transparent, transparent);
+    }
+
+    & .name {
+      text-align: center;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 0 0 auto;
+    }
+
+    & .tags {
+      padding: 10px 0;
+      flex-grow: 1;
+      display: flex;
+      gap: 6px;
+      font-size: 0.6em;
+      color: #aaa;
+      flex-wrap: wrap;
+      overflow-y: auto;
+
+      & .tag {
+        &:before {
+          margin-right: 4px;
+          content: "\f02b";
+          font-family: "Line Awesome Free", monospace;
+          font-weight: 900;
+        }
+      }
+    }
+
+    & .children {
+      text-align: center;
+      font-size: 0.6em;
+      height: 1.2em;
+      color: #777;
+    }
+  }
+}

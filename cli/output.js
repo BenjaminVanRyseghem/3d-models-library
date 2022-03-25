@@ -41,6 +41,7 @@ async function traverse(entity) {
 	}
 
 	delete entity.path;
+	entity.exported = true;
 
 	return Promise.all(entity.children.map((child) => traverse(child)));
 }

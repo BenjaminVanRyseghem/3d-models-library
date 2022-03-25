@@ -1,4 +1,4 @@
-import "./layout.scss";
+import "components/layout/layout.css";
 import { Outlet } from "react-router-dom";
 import PropTypes from "prop-types";
 import React from "react";

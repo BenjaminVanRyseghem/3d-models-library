@@ -1,5 +1,5 @@
-import "./index.scss";
 import "./dev.js";
+import "index.css";
 import {
 	BrowserRouter,
 	Route,
@@ -17,9 +17,9 @@ ReactDOM.render(
 		<BrowserRouter>
 			<Routes>
 				<Route element={<Layout/>} path="/">
-					<Route index element={<Home/>}/>
+					<Route index element={<Home electronAPI={window.electronAPI}/>}/>
 					<Route path="entity">
-						<Route element={<Entity/>} path=":id"/>
+						<Route element={<Entity electronAPI={window.electronAPI}/>} path=":id"/>
 					</Route>
 				</Route>
 			</Routes>

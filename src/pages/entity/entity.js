@@ -1,6 +1,7 @@
-import "./entity.scss";
+import "pages/entity/entity.css";
 import { useNavigate, useParams } from "react-router-dom";
 import EntityCard from "components/entityCard/entityCard.js";
+import EntityPicture from "components/entityPicture/entityPicture.js";
 import PropTypes from "prop-types";
 import React from "react";
 
@@ -8,6 +9,7 @@ class EntityContent extends React.Component {
 	static defaultProps = {};
 
 	static propTypes = {
+		electronAPI: PropTypes.object.isRequired,
 		id: PropTypes.string.isRequired,
 		navigate: PropTypes.func.isRequired
 	};
@@ -17,9 +19,9 @@ class EntityContent extends React.Component {
 	};
 
 	fetchEntity() {
-		window.electronAPI.getEntity(this.props.id).then((entity) => {
+		this.props.electronAPI.getEntity(this.props.id).then((entity) => {
 			this.setState({ entity });
-			window.electronAPI.setTitle(entity.name);
+			this.props.electronAPI.setTitle(entity.name);
 		});
 	}
 
@@ -41,8 +43,8 @@ class EntityContent extends React.Component {
 		}
 		return (
 			<div className="entity">
-				<div className="image">
-					{entity.picture && <img alt="entity cover" src={`resource://${entity.path}/${entity.picture}`}/>}
+				<div className="cover">
+					<EntityPicture entity={entity}/>
 				</div>
 				<div className="name">{entity.name}</div>
 

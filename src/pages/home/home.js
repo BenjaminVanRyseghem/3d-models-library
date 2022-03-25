@@ -1,15 +1,20 @@
-import "./home.scss";
+import "pages/home/home.css";
 import EntityCard from "components/entityCard/entityCard.js";
+import PropTypes from "prop-types";
 import React from "react";
 
 export default class Home extends React.Component {
+	static propTypes = {
+		electronAPI: PropTypes.object.isRequired
+	};
+
 	state = {
 		entities: null
 	};
 
 	componentDidMount() {
-		window.electronAPI.setTitle("3d Models Library");
-		window.electronAPI.getAllEntities().then((entities) => {
+		this.props.electronAPI.setTitle("3d Models Library");
+		this.props.electronAPI.getAllEntities().then((entities) => {
 			this.setState({ entities });
 		});
 	}
@@ -21,7 +26,9 @@ export default class Home extends React.Component {
 		}
 
 		return (<div className="home">
-			{entities.map((entity) => <EntityCard key={entity.id} entity={entity}/>)}
+			<div className="entities">
+				{entities.map((entity) => <EntityCard key={entity.id} entity={entity}/>)}
+			</div>
 		</div>);
 	}
 }

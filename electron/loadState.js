@@ -1,5 +1,4 @@
 // eslint-disable-next-line filenames/match-exported
-const { getData } = require("cli/database.js");
 const { v4: uuidv4 } = require("uuid");
 
 const root = "/Users/benjamin/Documents/3d models";
@@ -31,17 +30,18 @@ function appendToMap(entity, map = {}) {
 
 module.exports = {
 	init() {
-		return getData(root).then(({ entities, tags }) => {
-			resolveTagsPromise(tags);
-			resolveEntitiesPromise(entities);
+		return import("../cli/database.js")
+			.then(({ getData }) => getData(root).then(({ entities, tags }) => {
+					resolveTagsPromise(tags);
+					resolveEntitiesPromise(entities);
 
-			let entitiesMap = {};
-			entities.forEach((entity) => {
-				appendToMap(entity, entitiesMap);
-			});
+					let entitiesMap = {};
+					entities.forEach((entity) => {
+						appendToMap(entity, entitiesMap);
+					});
 
-			resolveEntitiesAsMapPromise(entitiesMap);
-		});
+					resolveEntitiesAsMapPromise(entitiesMap);
+				}));
 	},
 	getAllTags() {
 		return tagsPromise;
