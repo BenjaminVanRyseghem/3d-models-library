@@ -1,5 +1,11 @@
 {
   "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "requireConfigFile": false
+  },
+  "plugins": [
+    "sort-imports-es6-autofix"
+  ],
   "extends": [
     "eslint-config-benjamin-van-ryseghem",
     "plugin:react-hooks/recommended"
@@ -24,6 +30,10 @@
         ]
       }
     ],
+    "sort-imports-es6-autofix/sort-imports-es6": [
+      "error"
+    ],
+    "sort-imports": "off",
     "ftgp/indent": "off",
     "jsdoc/no-undefined-types": "off",
     "jsdoc/check-indentation": "off",

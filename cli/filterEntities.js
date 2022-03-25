@@ -1,4 +1,20 @@
-const Fuse = require("fuse.js");
+import Fuse from "fuse.js";
+
+export function filterEntities(entities, { tags, kinds }) {
+	return innerFilterEntities(entities, {
+		tags,
+		kinds
+	});
+}
+
+export function fuzzyMatchName(entities, name) {
+	if (!name) {
+		return entities;
+	}
+
+	let fuse = new Fuse(entities, { keys: ["name"] });
+	return fuse.search(name);
+}
 
 function searchFiltersAndKinds(entity, tags, kinds) {
 	let remainingTags = entity.tags ? tags.filter((tag) => entity.tags.indexOf(tag) === -1) : tags;
@@ -31,24 +47,3 @@ function innerFilterEntities(entities, { tags, kinds }) {
 
 	return result;
 }
-
-function filterEntities(entities, { tags, kinds }) {
-	return innerFilterEntities(entities, {
-		tags,
-		kinds
-	});
-}
-
-function fuzzyMatchName(entities, name) {
-	if (!name) {
-		return entities;
-	}
-
-	let fuse = new Fuse(entities, { keys: ["name"] });
-	return fuse.search(name);
-}
-
-module.exports = {
-	filterEntities,
-	fuzzyMatchName
-};

@@ -1,6 +1,20 @@
-const { Command } = require("commander");
-const importFolder = require("./importFolder.js");
-const search = require("./search.js");
+import { Command } from "commander";
+import importFolder from "./importFolder.js";
+import migrate from "./migrate.js";
+import search from "./search.js";
+
+function wrapCommand(command) {
+	return async (...args) => {
+		try {
+			await command(...args);
+		} catch (error) {
+			// eslint-disable-next-line no-console
+			console.error(error.message);
+			// eslint-disable-next-line no-process-exit
+			process.exit(1);
+		}
+	};
+}
 
 let program = new Command();
 program
@@ -15,9 +29,16 @@ program.command("search")
 	.option("-t, --tag <string...>", "filter by tag(s)")
 	.option("-k, --kind <string...>", "filter by kind(s)")
 	.option("-n, --name <string>", "filter by name (fuzzy)")
-	.action(search);
+	.option("-x, --export [string]", "export the output as JSON", "")
+	.action(wrapCommand(search));
 program.command("import")
+	.description("command to import a folder in the database")
 	.argument("<folder>", "folder to import")
-	.action(importFolder);
+	.action(wrapCommand(importFolder));
+
+program.command("migrate")
+	.description("command to force the migration of the database entry to the latest version")
+	.option("-r, --root <string>", "root directory of your on-disk library", process.cwd())
+	.action(wrapCommand(migrate));
 
 program.parse();

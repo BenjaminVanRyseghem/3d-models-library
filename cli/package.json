@@ -1,8 +1,10 @@
 {
   "name": "cli",
+  "type": "module",
   "version": "1.0.0",
   "dependencies": {
     "commander": "^9.0.0",
-    "inquirer": "^8.2.1"
+    "inquirer": "^8.2.1",
+    "mime-types": "^2.1.35"
   }
 }

@@ -1,17 +1,6 @@
-const { getData } = require("../backend/database.js");
-const {
-	filterEntities,
-	fuzzyMatchName
-} = require("../backend/filterEntities.js");
-
-function buildOutput(humanReadable) {
-	if (humanReadable) {
-		// eslint-disable-next-line no-console
-		return (object) => { console.log(JSON.stringify(object, null, 2)); };
-	}
-	// eslint-disable-next-line no-console
-	return (object) => { console.log(JSON.stringify(object,)); };
-}
+import { filterEntities, fuzzyMatchName } from "./filterEntities.js";
+import { getData } from "./database.js";
+import buildOutput from "./output.js";
 
 function flattenEntities(entities) {
 	let result = [];
@@ -23,35 +12,29 @@ function flattenEntities(entities) {
 	return result;
 }
 
-async function search(opts) {
-	let output = buildOutput(opts.human);
+export default async function search(opts) {
+	let output = buildOutput(opts);
 
 	let dbData = await getData(opts.root);
 
 	if (opts.tag && opts.tag.length === 1) {
-		output(fuzzyMatchName(dbData.tags[opts.tag[0]], opts.name));
-		return;
+		return output(fuzzyMatchName(dbData.tags[opts.tag[0]], opts.name));
 	}
 
 	if (opts.kind && opts.kind.length === 1) {
-		output(fuzzyMatchName(dbData.kinds[opts.kind[0]], opts.name));
-		return;
+		return output(fuzzyMatchName(dbData.kinds[opts.kind[0]], opts.name));
 	}
 
 	if (opts.tag || opts.kind) {
-		output(fuzzyMatchName(filterEntities(dbData.entities, {
+		return output(fuzzyMatchName(filterEntities(dbData.entities, {
 			tags: opts.tag,
 			kinds: opts.kind
 		}), opts.name));
-		return;
 	}
 
 	if (opts.name) {
-		output(fuzzyMatchName(flattenEntities(dbData.entities), opts.name));
-		return;
+		return output(fuzzyMatchName(flattenEntities(dbData.entities), opts.name));
 	}
 
-	output(dbData.entities);
+	return output(dbData.entities);
 }
-
-module.exports = search;

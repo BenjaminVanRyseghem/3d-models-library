@@ -1,5 +1,5 @@
 // eslint-disable-next-line filenames/match-exported
-const { getData } = require("../backend/database.js");
+const { getData } = require("cli/database.js");
 const { v4: uuidv4 } = require("uuid");
 
 const root = "/Users/benjamin/Documents/3d models";

@@ -1,6 +1,7 @@
-const { readdir, writeFile } = require("fs").promises;
-const path = require("path");
-const inquirer = require("inquirer");
+import { readdir, writeFile } from "fs/promises";
+import { version } from "./database.js";
+import inquirer from "inquirer";
+import path from "path";
 
 const modelExtensions = [".stl", ".lys", ".ctb", ".obj"];
 const pictureExtensions = [".png", ".jpg", ".jpeg", ".webp"];
@@ -65,9 +66,9 @@ const noArchives = (archives) => ({
 	when: (hash) => hash["confirm-import"] && hash["confirm-no-model"] !== false && !archives.length
 });
 
-const choosePicture = (pictures) => ({
+const chooseCover = (pictures) => ({
 	message: "Which picture to use as cover?",
-	name: "picture",
+	name: "cover",
 	type: "list",
 	choices: pictures.map((picture) => ({
 		name: picture.name,
@@ -142,7 +143,7 @@ const chooseTypes = (models, archives) => ({
 	when: (hash) => (models.length || archives.length) && hash["confirm-import"] && hash["confirm-no-model"] !== false
 });
 
-async function importFolder(folder) {
+export default async function importFolder(folder) {
 	let folderPath = path.resolve(process.cwd(), folder);
 	let {
 		models,
@@ -155,7 +156,7 @@ async function importFolder(folder) {
 			confirmImport(folderPath),
 			noModels(models, archives),
 			noArchives(archives),
-			choosePicture(pictures),
+			chooseCover(pictures),
 			chooseName(getLastItem(folder)),
 			chooseKind,
 			chooseTags,
@@ -167,13 +168,17 @@ async function importFolder(folder) {
 				kind: answers.kind,
 				tags: answers.tags
 			};
+			data.pictures = pictures.map((picture) => picture.name);
 
-			if (answers.picture) {
-				data.picture = `./${answers.picture}`;
+			if (answers.cover) {
+				data.cover = `./${answers.cover}`;
 			}
+
 			if (answers.createArchive) {
 				data.archive = `./${answers.name}.zip`;
 			}
+
+			data.version = version;
 
 			let file = path.resolve(folderPath, ".3d-model-entity.json");
 			return writeFile(file, JSON.stringify(data, null, 2));
@@ -186,5 +191,3 @@ async function importFolder(folder) {
 			}
 		});
 }
-
-module.exports = importFolder;
