@@ -35,6 +35,16 @@ class EntityContent extends React.Component {
 		this.fetchEntity();
 	}
 
+	renderInfo() {
+		let { entity } = this.state;
+		return (
+			<div className="entity-info">
+				<div className="kind">{entity.kind}</div>
+				<div className="tags">Tags</div>
+			</div>
+		);
+	}
+
 	render() {
 		let { entity } = this.state;
 
@@ -47,7 +57,7 @@ class EntityContent extends React.Component {
 					<EntityPicture entity={entity}/>
 				</div>
 				<div className="name">{entity.name}</div>
-
+				{this.renderInfo()}
 				<div className="children">
 					{entity.children.map((child) => <EntityCard key={child.id} entity={child}/>)}
 				</div>
@@ -62,8 +72,12 @@ class EntityContent extends React.Component {
 	}
 }
 
-export default function Entity() {
+export default function Entity({ electronAPI }) {
 	let params = useParams();
 	let navigate = useNavigate();
-	return <EntityContent id={params.id} navigate={navigate}/>;
+	return <EntityContent electronAPI={electronAPI} id={params.id} navigate={navigate}/>;
 }
+
+Entity.propTypes = {
+	electronAPI: PropTypes.object.isRequired
+};
