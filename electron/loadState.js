@@ -1,7 +1,7 @@
 // eslint-disable-next-line filenames/match-exported
 const { v4: uuidv4 } = require("uuid");
 
-const root = "/Users/benjamin/Documents/3d models";
+const root = "/Users/benjamin/Documents/3d models/stl/Archvillain Games - 2022-08 - Agama - Shattered Valley";
 
 let resolveEntitiesPromise = () => {};
 let resolveEntitiesAsMapPromise = () => {};
