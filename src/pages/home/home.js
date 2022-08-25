@@ -1,34 +1,33 @@
 import "pages/home/home.css";
+import { defaultAppName } from "variables.js";
+import { useElectronAPI, useElectronAPIPromise } from "hooks.js";
 import EntityCard from "components/entityCard/entityCard.js";
-import PropTypes from "prop-types";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-export default class Home extends React.Component {
-	static propTypes = {
-		electronAPI: PropTypes.object.isRequired
-	};
+const getAllEntities = (api) => {
+	return api.getAllEntities();
+};
 
-	state = {
-		entities: null
-	};
+export default function Home() {
+	let [entities, setEntities] = useState(null);
+	let electronAPI = useElectronAPI();
 
-	componentDidMount() {
-		this.props.electronAPI.setTitle("3d Models Library");
-		this.props.electronAPI.getAllEntities().then((entities) => {
-			this.setState({ entities });
-		});
+	useEffect(() => {
+		electronAPI.setTitle(defaultAppName);
+	}, [electronAPI]);
+
+	useElectronAPIPromise(getAllEntities).then(setEntities);
+
+	if (!entities) {
+		return "loading";
 	}
 
-	render() {
-		let { entities } = this.state;
-		if (!entities) {
-			return "loading";
-		}
-
-		return (<div className="home">
+	return (
+		<div className="home">
+			<h1>All models</h1>
 			<div className="entities">
 				{entities.map((entity) => <EntityCard key={entity.id} entity={entity}/>)}
 			</div>
-		</div>);
-	}
+		</div>
+	);
 }
