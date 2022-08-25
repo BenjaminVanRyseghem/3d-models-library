@@ -1,0 +1,13 @@
+.WizardFooter {
+  --gap: 30px;
+
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+
+  & .Roadmap {
+     flex-grow: 1;
+  }
+}

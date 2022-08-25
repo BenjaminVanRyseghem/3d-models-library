@@ -1,6 +1,6 @@
 import "pages/entity/entity.css";
-import { useElectronAPI, useElectronAPIPromise } from "hooks.js";
 import { defaultAppName } from "variables.js";
+import { useElectronAPI, useElectronAPIPromise } from "hooks.js";
 import { useNavigate, useParams } from "react-router-dom";
 import EntityCard from "components/entityCard/entityCard.js";
 import EntityPicture from "components/entityPicture/entityPicture.js";

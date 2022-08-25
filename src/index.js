@@ -1,4 +1,5 @@
 import "./dev.js";
+import "antd/dist/antd.css";
 import "index.css";
 import {
 	BrowserRouter,
@@ -7,6 +8,7 @@ import {
 } from "react-router-dom";
 import Entity from "pages/entity/entity.js";
 import Home from "pages/home/home.js";
+import Import from "pages/import/import.js";
 import Layout from "components/layout/layout.js";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -17,9 +19,10 @@ ReactDOM.render(
 		<BrowserRouter>
 			<Routes>
 				<Route element={<Layout/>} path="/">
-					<Route index element={<Home electronAPI={window.electronAPI}/>}/>
+					<Route index element={<Home/>}/>
+					<Route index element={<Import/>} path="import"/>
 					<Route path="entity">
-						<Route element={<Entity electronAPI={window.electronAPI}/>} path=":id"/>
+						<Route element={<Entity/>} path=":id"/>
 					</Route>
 				</Route>
 			</Routes>

@@ -10,6 +10,8 @@
   --color-s: 0%;
   --color-l: 90%;
   --color: hsl(var(--color-h), var(--color-s), var(--color-l));
+
+  --bite: red;
 }
 
 body {
