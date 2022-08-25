@@ -166,7 +166,8 @@ export default async function importFolder(folder) {
 			let data = {
 				name: answers.name,
 				kind: answers.kind,
-				tags: answers.tags
+				tags: answers.tags,
+				types: answers.types
 			};
 			data.pictures = pictures.map((picture) => picture.name);
 
