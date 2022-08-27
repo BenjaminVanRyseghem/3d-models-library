@@ -1,5 +1,5 @@
 import { migrateEntity } from "./migrate.js";
-import { readFile, readdir } from "fs/promises";
+import { readdir, readFile } from "fs/promises";
 import { resolve } from "path";
 
 export const version = 2;
@@ -61,8 +61,11 @@ export async function getData(dir) {
 function buildEntity({ data, dir, tags, kinds }) {
 	data.local = true;
 	data.path = dir;
+	data.tags ||= [];
 
-	(data.tags || []).forEach((tag) => {
+	data.tags = data.tags.filter(Boolean);
+
+	data.tags.forEach((tag) => {
 		tags[tag] ??= [];
 		tags[tag].push(data);
 	});

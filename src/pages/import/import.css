@@ -1,0 +1,49 @@
+.import {
+  --shadow-color: hsl(var(--background-color-h), var(--background-color-s), 50%);
+
+  & .import-wizard {
+    width: 80%;
+    margin: 80px auto 0;
+    max-width: 800px;
+    background: white;
+    color: black;
+
+    box-shadow: 0 0 40px 4px var(--shadow-color);
+
+    & .import-wizard-step {
+      min-height: 500px;
+      width: 100%;
+      position: relative;
+
+      & .wizard-step-title {
+        text-align: center;
+        padding-top: 0.5em;
+      }
+
+      & .wizard-step-content-container {
+        margin-top: -30px;
+        position: absolute;
+        top: 115px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+
+        & .wizard-step-content {
+          padding: 0 3em;
+        }
+      }
+
+      & .select-folder-line {
+        display: flex;
+        gap: 1ch;
+        margin-bottom: 1ch;
+      }
+    }
+  }
+
+  & .WizardFooter {
+    background: var(--dark2);
+  }
+}

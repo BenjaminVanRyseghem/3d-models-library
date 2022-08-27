@@ -1,7 +1,7 @@
 .WizardFooter {
-  --gap: 30px;
+  --gap: 100px;
 
-  margin-top: 20px;
+  padding: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -9,5 +9,13 @@
 
   & .Roadmap {
      flex-grow: 1;
+  }
+
+  & .hidden {
+    visibility: hidden;
+  }
+
+  & .fixed-width {
+    width: 100px;
   }
 }

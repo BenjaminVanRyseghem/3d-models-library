@@ -1,9 +1,11 @@
 import "./wizardFooter.css";
-import { Button, Steps } from "antd";
+import { Button, message, Steps } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useWizard } from "react-use-wizard";
+import { WizardContext } from "helpers.js";
+import classnames from "classnames";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useContext } from "react";
 
 function range(size) {
 	return Array.from({ length: size }, (_, index) => index);
@@ -35,10 +37,27 @@ export default function WizardFooter() {
 		previousStep,
 		nextStep
 	} = useWizard();
+	let { currentError, setCurrentError } = useContext(WizardContext);
+
+	async function handleOnNext() {
+		setCurrentError(null);
+		try {
+			await nextStep();
+		} catch (err) {
+			message.error(err.message);
+			setCurrentError(err);
+		}
+	}
+
 	return <div className="WizardFooter">
-		<Button disabled={isFirstStep} type="primary" onClick={() => previousStep()}>Previous</Button>
-		<Roadmap activeStep={activeStep} isLoading={isLoading} stepCount={stepCount}/>
-		<Button type="primary" onClick={() => nextStep()}>{isLastStep ? "Done" : "Next"}</Button>
+		<Button className={classnames(["fixed-width", { hidden: isFirstStep }])} type="primary" onClick={() => previousStep()}>Previous</Button>
+		<Roadmap
+			activeStep={activeStep}
+			isError={!!currentError}
+			isLoading={isLoading}
+			stepCount={stepCount}
+		/>
+		<Button className="fixed-width" danger={!!currentError} type="primary" onClick={handleOnNext}>{isLastStep ? "Done" : "Next"}</Button>
 	</div>;
 }
 

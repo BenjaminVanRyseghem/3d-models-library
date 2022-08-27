@@ -36,7 +36,13 @@ if (!window.electronAPI && process.env.NODE_ENV === "development") {
 
 	window.electronAPI = {
 		setTitle: () => Promise.resolve(),
+		getAllTags: () => Promise.resolve([]),
 		getAllEntities: () => loadData,
-		getEntity: (id) => loadData.then((data) => findEntity(id, data))
+		getEntity: (id) => loadData.then((data) => findEntity(id, data)),
+		selectFolder: () => new Promise((resolve) => {
+			setTimeout(() => {
+				resolve("/Users/foo/path to the/folder");
+			}, 1000);
+		})
 	};
 }
