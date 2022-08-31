@@ -2,18 +2,55 @@ import "./wizardFooter.css";
 import { Button, message, Steps } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useWizard } from "react-use-wizard";
-import { WizardContext } from "helpers.js";
+import { useWizardError } from "components/wizardWithError/wizardWithError.js";
 import classnames from "classnames";
 import PropTypes from "prop-types";
-import React, { useContext } from "react";
+import React from "react";
 
 function range(size) {
 	return Array.from({ length: size }, (_, index) => index);
 }
 
-function Roadmap({ activeStep, stepCount, isLoading, isError = false }) {
-	let stepsRange = range(stepCount);
+function computeStepRangeFirstIndex({ maxVisibleSteps, activeStep, stepCount }) {
+	let floor = Math.floor(maxVisibleSteps / 2);
+	if (activeStep < floor) {
+		return 0;
+	}
+	if (activeStep >= stepCount - floor) {
+		return stepCount - maxVisibleSteps;
+	}
 
+	return activeStep - floor;
+}
+
+function Roadmap({ activeStep, stepCount, isLoading, isError = false, maxVisibleSteps = -1 }) {
+	if (maxVisibleSteps > 0 && stepCount > maxVisibleSteps) {
+		let stepsRange = range(maxVisibleSteps);
+		let initial = computeStepRangeFirstIndex({
+			activeStep,
+			stepCount,
+			maxVisibleSteps
+		});
+		let activeIndex = activeStep - initial;
+
+		return (
+			<div className="Roadmap">
+				<Steps current={activeStep}
+					initial={initial}
+					size="sm"
+					status={isError ? "error" : "process"}
+				>
+					{stepsRange.map((index) => {
+						let icon = isLoading && index === activeIndex ? <LoadingOutlined/> : undefined;
+						let status = index < activeIndex ? "finish" : undefined;
+						return <Steps.Step key={index} icon={icon} status={status}/>;
+					})}
+				</Steps>
+			</div>
+		);
+	}
+
+	let stepsRange = range(stepCount);
 	return (
 		<div className="Roadmap">
 			<Steps current={activeStep} size="sm" status={isError ? "error" : "process"}>
@@ -27,7 +64,7 @@ function Roadmap({ activeStep, stepCount, isLoading, isError = false }) {
 	);
 }
 
-export default function WizardFooter() {
+export default function WizardFooter({ onDone = () => {} }) {
 	let {
 		isLoading,
 		isLastStep,
@@ -37,10 +74,14 @@ export default function WizardFooter() {
 		previousStep,
 		nextStep
 	} = useWizard();
-	let { currentError, setCurrentError } = useContext(WizardContext);
+	let { currentError, setCurrentError, resetCurrentError } = useWizardError();
 
 	async function handleOnNext() {
-		setCurrentError(null);
+		resetCurrentError();
+		if (isLastStep) {
+			onDone();
+		}
+
 		try {
 			await nextStep();
 		} catch (err) {
@@ -50,20 +91,29 @@ export default function WizardFooter() {
 	}
 
 	return <div className="WizardFooter">
-		<Button className={classnames(["fixed-width", { hidden: isFirstStep }])} type="primary" onClick={() => previousStep()}>Previous</Button>
+		<Button className={classnames(["fixed-width", { hidden: isFirstStep }])} type="primary" onClick={() => {
+			resetCurrentError();
+			previousStep();
+		}}>Previous</Button>
 		<Roadmap
 			activeStep={activeStep}
 			isError={!!currentError}
 			isLoading={isLoading}
+			maxVisibleSteps={5}
 			stepCount={stepCount}
 		/>
-		<Button className="fixed-width" danger={!!currentError} type="primary" onClick={handleOnNext}>{isLastStep ? "Done" : "Next"}</Button>
+		<Button className="fixed-width" danger={!!currentError} disabled={isLoading} type="primary" onClick={handleOnNext}>{isLastStep ? "Done" : "Next"}</Button>
 	</div>;
 }
+
+WizardFooter.propTypes = {
+	onDone: PropTypes.func
+};
 
 Roadmap.propTypes = {
 	activeStep: PropTypes.number.isRequired,
 	isError: PropTypes.bool,
 	isLoading: PropTypes.bool.isRequired,
+	maxVisibleSteps: PropTypes.number,
 	stepCount: PropTypes.number.isRequired
 };

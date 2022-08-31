@@ -41,7 +41,17 @@ if (!window.electronAPI && process.env.NODE_ENV === "development") {
 		getEntity: (id) => loadData.then((data) => findEntity(id, data)),
 		selectFolder: () => new Promise((resolve) => {
 			setTimeout(() => {
-				resolve("/Users/foo/path to the/folder");
+				resolve({
+					folderPath: "/Users/foo/path to the/folder",
+					pictures: [
+						"/Users/benjamin/Documents/3d models/stl/Archvillain Games - 2022-08 - Agama - Shattered Valley/Archvillain Games - Agama - Shattered Valley - Presupported/Agama Aztical/ASV.IndPres.Aztical.01.jpeg",
+						"/Users/benjamin/Documents/3d models/stl/Archvillain Games - 2022-08 - Agama - Shattered Valley/Archvillain Games - Agama - Shattered Valley - Presupported/Agama Aztical/ASV.IndPres.Aztical.02.jpeg",
+						"/Users/benjamin/Documents/3d models/stl/Archvillain Games - 2022-08 - Agama - Shattered Valley/Archvillain Games - Agama - Shattered Valley - Presupported/Agama Aztical/ASV.IndPres.Aztical.03.jpeg",
+						"/Users/benjamin/Documents/3d models/stl/Archvillain Games - 2022-08 - Agama - Shattered Valley/Archvillain Games - Agama - Shattered Valley - Presupported/Agama Aztical/ASV.IndPres.Aztical.04.jpeg"
+					],
+					models: [],
+					archives: []
+				});
 			}, 1000);
 		})
 	};

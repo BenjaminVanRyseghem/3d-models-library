@@ -7,8 +7,12 @@
   justify-content: space-between;
   gap: var(--gap);
 
+  & > button {
+    flex: 0 0 auto;;
+  }
+
   & .Roadmap {
-     flex-grow: 1;
+    flex: 1 1 auto;;
   }
 
   & .hidden {

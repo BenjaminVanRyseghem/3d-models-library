@@ -1,7 +1,42 @@
 const { app, BrowserWindow, ipcMain, dialog, protocol } = require("electron");
 const loadState = require("./loadState");
+const { readdir } = require("fs/promises");
+const path = require("path");
+
+const modelExtensions = [".stl", ".lys", ".ctb", ".obj"];
+const archiveExtensions = [".zip", ".7z", ".tar.gz"];
 
 const pictureExtensions = [".png", ".jpg", ".jpeg", ".webp"];
+
+async function getInfo(dir) {
+	let dirents = await readdir(dir, { withFileTypes: true });
+	let pictures = [];
+	let models = [];
+	let archives = [];
+	dirents.forEach((dirent) => {
+		if (dirent.isFile()) {
+			let ext = path.extname(dirent.name).toLowerCase();
+
+			if (modelExtensions.indexOf(ext) !== -1) {
+				models.push(dirent);
+			}
+
+			if (pictureExtensions.indexOf(ext) !== -1) {
+				pictures.push(path.resolve(dir, dirent.name));
+			}
+
+			if (archiveExtensions.indexOf(ext) !== -1) {
+				archives.push(dirent);
+			}
+		}
+	});
+
+	return {
+		pictures,
+		models,
+		archives
+	};
+}
 
 ipcMain.on("setTitle", (event, title) => {
 	const webContents = event.sender;
@@ -21,7 +56,14 @@ ipcMain.handle("dialog:openDirectory", async (event) => {
 	if (canceled) {
 		return null;
 	}
-	return filePaths[0];
+
+	let [folderPath] = filePaths;
+	let info = await getInfo(folderPath);
+
+	return {
+		folderPath,
+		...info
+	};
 });
 
 app.whenReady().then(() => {

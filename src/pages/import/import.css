@@ -10,6 +10,10 @@
 
     box-shadow: 0 0 40px 4px var(--shadow-color);
 
+    & .ant-descriptions-item-content {
+      color: #000000d9;
+    }
+
     & .import-wizard-step {
       min-height: 500px;
       width: 100%;
@@ -21,7 +25,6 @@
       }
 
       & .wizard-step-content-container {
-        margin-top: -30px;
         position: absolute;
         top: 115px;
         left: 0;
@@ -32,6 +35,10 @@
 
         & .wizard-step-content {
           padding: 0 3em;
+          overflow: auto;
+          max-height: 100%;
+          width: 100%;
+          transform: translateY(-30px);
         }
       }
 
@@ -45,5 +52,9 @@
 
   & .WizardFooter {
     background: var(--dark2);
+  }
+
+  & .ellipsis-content {
+    max-width: 20px;
   }
 }

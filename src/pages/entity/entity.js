@@ -1,38 +1,16 @@
 import "pages/entity/entity.css";
-import { Button, Descriptions, Image, Layout, Skeleton } from "antd";
 import { defaultAppName } from "variables.js";
+import { Descriptions, Layout, Skeleton } from "antd";
 import { PictureOutlined } from "@ant-design/icons";
 import { resolveEntityPicture } from "helpers.js";
 import { useElectronAPI, useElectronAPIPromise } from "hooks.js";
 import { useParams } from "react-router-dom";
 import EntityCard from "components/entityCard/entityCard.js";
 import EntityPicture from "components/entityPicture/entityPicture.js";
+import ImagePreview from "components/imagePreview/imagePreview.js";
 import PageHeader from "components/pageHeader/pageHeader.js";
 import PropTypes from "prop-types";
 import React, { useCallback, useEffect, useState } from "react";
-
-function ImagePreview({ title, src }) {
-	const [visible, setVisible] = useState(false);
-
-	return (
-		<>
-			<Button type="primary" onClick={() => setVisible(true)}>
-				{title}
-			</Button>
-			<Image
-				preview={{
-					visible,
-					src,
-					onVisibleChange: (value) => {
-						setVisible(value);
-					}
-				}}
-				src={src}
-				style={{ display: "none" }}
-			/>
-		</>
-	);
-}
 
 function Info({ entity }) {
 	return (
@@ -109,7 +87,3 @@ Info.propTypes = {
 	entity: PropTypes.object.isRequired
 };
 
-ImagePreview.propTypes = {
-	src: PropTypes.string.isRequired,
-	title: PropTypes.node.isRequired
-};

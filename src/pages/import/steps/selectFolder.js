@@ -1,25 +1,23 @@
 import { Button, Typography } from "antd";
-import { WizardContext } from "helpers.js";
 import { useElectronAPI } from "hooks.js";
 import { useWizard } from "react-use-wizard";
+import { useWizardError } from "components/wizardWithError/wizardWithError.js";
 import AbstractStep from "pages/import/steps/abstractStep.js";
 import PropTypes from "prop-types";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 
 let { Paragraph, Text } = Typography;
 
-export default function SelectFolder({ initialFolder, onFolderChange }) {
-	let [folder, setFolder] = useState(initialFolder);
+export default function SelectFolder({ info, setInfo }) {
 	let [isLoading, setIsLoading] = useState(false);
 	let electronAPI = useElectronAPI();
 	let { handleStep } = useWizard();
-	let { setCurrentError } = useContext(WizardContext);
+	let { resetCurrentError } = useWizardError();
 
 	handleStep(() => {
-		if (!folder) {
+		if (!info.folderPath) {
 			throw new Error("You must select a folder");
 		}
-		onFolderChange(folder);
 	});
 
 	function Content() {
@@ -29,14 +27,14 @@ export default function SelectFolder({ initialFolder, onFolderChange }) {
 
 		return (<>
 				{
-					!folder &&
+					!info.folderPath &&
 					<Paragraph className="select-folder-line">
 						{"Select the folder to open "}
 						<Button className="select-folder" type="primary" onClick={() => {
 							setIsLoading(true);
-							setCurrentError(null);
+							resetCurrentError();
 							return electronAPI.selectFolder().then((value) => {
-								setFolder(value);
+								setInfo(value);
 								setIsLoading(false);
 							});
 						}}>
@@ -45,14 +43,14 @@ export default function SelectFolder({ initialFolder, onFolderChange }) {
 					</Paragraph>
 				}
 				{
-					folder &&
+					info.folderPath &&
 					<>
 						<Paragraph>
-							You selected <Text keyboard>{folder}</Text>.
+							You selected <Text keyboard>{info.folderPath}</Text>.
 						</Paragraph>
 						<Button
 							danger
-							onClick={() => setFolder(null)}
+							onClick={() => setInfo({})}
 						>
 							Retry
 						</Button>
@@ -68,6 +66,6 @@ export default function SelectFolder({ initialFolder, onFolderChange }) {
 }
 
 SelectFolder.propTypes = {
-	initialFolder: PropTypes.string,
-	onFolderChange: PropTypes.func.isRequired
+	info: PropTypes.object.isRequired,
+	setInfo: PropTypes.func.isRequired
 };

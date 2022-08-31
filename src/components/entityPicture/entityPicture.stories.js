@@ -2,7 +2,7 @@ import EntityPicture from "./entityPicture.js";
 
 export default {
 	component: EntityPicture,
-	title: "src/components/entityPicture",
+	title: "src/components/entityPicture"
 };
 
 const template = (args) => new EntityPicture(args);
