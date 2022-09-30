@@ -8,12 +8,12 @@ import React from "react";
 const { Paragraph } = Typography;
 const allTypes = [
 	{
-		name: "Supported",
-		value: "supported"
-	},
-	{
 		name: "Unsupported",
 		value: "unsupported"
+	},
+	{
+		name: "Supported",
+		value: "supported"
 	},
 	{
 		name: "Lys file",

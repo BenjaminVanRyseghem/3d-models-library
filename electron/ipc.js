@@ -5,7 +5,6 @@ const path = require("path");
 
 const modelExtensions = [".stl", ".lys", ".ctb", ".obj"];
 const archiveExtensions = [".zip", ".7z", ".tar.gz"];
-
 const pictureExtensions = [".png", ".jpg", ".jpeg", ".webp"];
 
 async function getInfo(dir) {
@@ -48,10 +47,19 @@ ipcMain.handle("getAllTags", () => loadState.getAllTags());
 ipcMain.handle("getAllEntities", () => loadState.getAllEntities());
 ipcMain.handle("getEntity", (event, id) => loadState.getEntity(id));
 ipcMain.handle("writeEntityFile", async (event, { answers, folderPath, pictures }) => {
-	let [{ writeEntityFile }, { getData, resolveParenthood }] = await Promise.all([
+	let [{ writeEntityFile }, { getData, resolveParenthood }, { compress }] = await Promise.all([
 		import("../cli/importFolder.js"),
-		import("../cli/database.js")
+		import("../cli/database.js"),
+		import("../cli/compress.js")
 	]);
+
+	if (answers.createArchive) {
+		await compress({
+			folder: folderPath,
+			name: answers.name,
+			deleteFiles: true
+		});
+	}
 
 	await writeEntityFile({
 		answers: {

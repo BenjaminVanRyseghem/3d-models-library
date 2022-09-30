@@ -19,6 +19,8 @@ import WizardFooter from "components/wizardFooter/wizardFooter.js";
 import WizardWithError from "components/wizardWithError/wizardWithError.js";
 
 const pathSep = "/"; // todo: fix it for windows
+const supportedRegex = /(?<!un)(?<!not )supported/i;
+const unsupportedRegex = /unsupported/i;
 
 const initialInfoState = {
 	archives: [],
@@ -33,19 +35,6 @@ const initialInfoState = {
 	tags: [],
 	types: []
 };
-
-function extractNameFromFolderPath(folderPath) {
-	if (!folderPath) {
-		return "";
-	}
-
-	let pathToSlice = folderPath;
-	if (pathToSlice.at(-1) === pathSep) {
-		pathToSlice = pathToSlice.slice(0, -1);
-	}
-
-	return pathToSlice.substring(pathToSlice.lastIndexOf(pathSep) + 1);
-}
 
 export default function Import() {
 	let electronAPI = useElectronAPI();
@@ -68,6 +57,9 @@ export default function Import() {
 			if (!newInfoValue) {
 				return initialInfoState;
 			}
+
+			newInfoValue.types ??= [];
+			newInfoValue.types.push(...extractGuessableTypes(newInfoValue));
 
 			return {
 				...previousValue,
@@ -120,4 +112,51 @@ export default function Import() {
 			</Layout.Content>
 		</div>
 	);
+}
+
+function extractNameFromFolderPath(folderPath) {
+	if (!folderPath) {
+		return "";
+	}
+
+	let pathToSlice = folderPath;
+	if (pathToSlice.at(-1) === pathSep) {
+		pathToSlice = pathToSlice.slice(0, -1);
+	}
+
+	return pathToSlice.substring(pathToSlice.lastIndexOf(pathSep) + 1);
+}
+
+function extractGuessableTypes({ models, folderPath }) {
+	if (!models?.length) {
+		return isSupported({ name: folderPath });
+	}
+	let result = new Set();
+	models.forEach((model) => {
+		if (isLys(model)) {
+			result.add("lys");
+		}
+
+		if (isSupported(model)) {
+			result.add("supported");
+		}
+
+		if (isUnsupported(model)) {
+			result.add("unsupported");
+		}
+	});
+
+	return Array.from(result);
+}
+
+function isLys({ name }) {
+	return name.endsWith(".lys");
+}
+
+function isSupported({ name }) {
+	return name.match(supportedRegex);
+}
+
+function isUnsupported({ name }) {
+	return name.match(unsupportedRegex);
 }
