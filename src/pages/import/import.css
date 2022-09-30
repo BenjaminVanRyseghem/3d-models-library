@@ -58,3 +58,23 @@
     max-width: 20px;
   }
 }
+
+.select-folder.loading {
+  & .wizard-step-content {
+    display: flex;
+
+    & .ant-spin {
+      margin: auto;
+      padding: 20px 0;
+
+      & .ant-spin-dot {
+        font-size: 100px;
+
+        & .ant-spin-dot-item {
+          width: 32px;
+          height: 32px;
+        }
+      }
+    }
+  }
+}

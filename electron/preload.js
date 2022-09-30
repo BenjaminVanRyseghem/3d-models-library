@@ -5,5 +5,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
 	getAllTags: () => ipcRenderer.invoke("getAllTags"),
 	getAllEntities: () => ipcRenderer.invoke("getAllEntities"),
 	getEntity: (id) => ipcRenderer.invoke("getEntity", id),
-	selectFolder: () => ipcRenderer.invoke("dialog:openDirectory")
+	selectFolder: () => ipcRenderer.invoke("dialog:openDirectory"),
+	writeEntityFile: (...args) => ipcRenderer.invoke("writeEntityFile", ...args)
 });

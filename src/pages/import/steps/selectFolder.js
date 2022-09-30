@@ -1,18 +1,18 @@
-import { Button, Typography } from "antd";
+import { Button, Spin, Typography } from "antd";
 import { useElectronAPI } from "hooks.js";
 import { useWizard } from "react-use-wizard";
 import { useWizardError } from "components/wizardWithError/wizardWithError.js";
 import AbstractStep from "pages/import/steps/abstractStep.js";
+import classnames from "classnames";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React from "react";
 
 let { Paragraph, Text } = Typography;
 
 export default function SelectFolder({ info, setInfo }) {
-	let [isLoading, setIsLoading] = useState(false);
 	let electronAPI = useElectronAPI();
 	let { handleStep } = useWizard();
-	let { resetCurrentError } = useWizardError();
+	let { resetCurrentError, isStepLoading, setIsStepLoading } = useWizardError();
 
 	handleStep(() => {
 		if (!info.folderPath) {
@@ -21,8 +21,8 @@ export default function SelectFolder({ info, setInfo }) {
 	});
 
 	function Content() {
-		if (isLoading) {
-			return "LOADING";
+		if (isStepLoading) {
+			return <Spin size="large"/>;
 		}
 
 		return (<>
@@ -31,11 +31,11 @@ export default function SelectFolder({ info, setInfo }) {
 					<Paragraph className="select-folder-line">
 						{"Select the folder to open "}
 						<Button className="select-folder" type="primary" onClick={() => {
-							setIsLoading(true);
+							setIsStepLoading(true);
 							resetCurrentError();
 							return electronAPI.selectFolder().then((value) => {
 								setInfo(value);
-								setIsLoading(false);
+								setIsStepLoading(false);
 							});
 						}}>
 							Open
@@ -50,7 +50,7 @@ export default function SelectFolder({ info, setInfo }) {
 						</Paragraph>
 						<Button
 							danger
-							onClick={() => setInfo({})}
+							onClick={() => setInfo(null)}
 						>
 							Retry
 						</Button>
@@ -61,7 +61,11 @@ export default function SelectFolder({ info, setInfo }) {
 	}
 
 	return (
-		<AbstractStep content={<Content/>} title={"Select the folder"}/>
+		<AbstractStep className={classnames({
+			"select-folder": true,
+			loading: isStepLoading
+		})} content={
+			<Content/>} title={"Select the folder"}/>
 	);
 }
 

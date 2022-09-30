@@ -4,9 +4,9 @@ import React from "react";
 
 let { Title } = Typography;
 
-export default function AbstractStep({ title, content }) {
+export default function AbstractStep({ className = undefined, title, content }) {
 	return (
-		<Typography>
+		<Typography className={className}>
 			<Title ellipsis className="wizard-step-title">{title}</Title>
 			<Divider plain/>
 			<div className="wizard-step-content-container">
@@ -17,6 +17,7 @@ export default function AbstractStep({ title, content }) {
 }
 
 AbstractStep.propTypes = {
+	className: PropTypes.string,
 	content: PropTypes.node.isRequired,
 	title: PropTypes.string.isRequired
 };

@@ -143,6 +143,37 @@ const chooseTypes = (models, archives) => ({
 	when: (hash) => (models.length || archives.length) && hash["confirm-import"] && hash["confirm-no-model"] !== false
 });
 
+function writeEntityFileFromAnswer({ folderPath, pictures }) {
+	return (answers) => writeEntityFile({
+		answers,
+		folderPath,
+		pictures
+	});
+}
+
+export function writeEntityFile({ answers, folderPath, pictures }) {
+	let data = {
+		name: answers.name,
+		kind: answers.kind,
+		tags: answers.tags,
+		types: answers.types
+	};
+	data.pictures = pictures.map((picture) => picture.name);
+
+	if (answers.cover) {
+		data.cover = answers.cover;
+	}
+
+	if (answers.createArchive) {
+		data.archive = `${answers.name}.zip`;
+	}
+
+	data.version = version;
+
+	let file = path.resolve(folderPath, ".3d-model-entity.json");
+	return writeFile(file, JSON.stringify(data, null, 2));
+}
+
 export default async function importFolder(folder) {
 	let folderPath = path.resolve(process.cwd(), folder);
 	let {
@@ -162,28 +193,10 @@ export default async function importFolder(folder) {
 			chooseTags,
 			chooseTypes(models, archives)
 		])
-		.then((answers) => {
-			let data = {
-				name: answers.name,
-				kind: answers.kind,
-				tags: answers.tags,
-				types: answers.types
-			};
-			data.pictures = pictures.map((picture) => picture.name);
-
-			if (answers.cover) {
-				data.cover = `./${answers.cover}`;
-			}
-
-			if (answers.createArchive) {
-				data.archive = `./${answers.name}.zip`;
-			}
-
-			data.version = version;
-
-			let file = path.resolve(folderPath, ".3d-model-entity.json");
-			return writeFile(file, JSON.stringify(data, null, 2));
-		})
+		.then(writeEntityFileFromAnswer({
+			folderPath,
+			pictures
+		}))
 		.catch((error) => {
 			if (error.isTtyError) {
 				// Prompt couldn't be rendered in the current environment

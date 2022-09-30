@@ -23,11 +23,6 @@
     text-align: center;
   }
 
-  & .children {
-    display: flex;
-    gap: 10px;
-  }
-
   & .card.empty {
     width: 300px;
     height: 300px;

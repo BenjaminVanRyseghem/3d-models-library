@@ -4,17 +4,22 @@ import React, { useContext, useState } from "react";
 const WizardWithErrorContext = React.createContext({
 	currentError: null,
 	setCurrentError: () => {},
-	resetCurrentError: () => {}
+	resetCurrentError: () => {},
+	isStepLoading: false,
+	setIsStepLoading: () => {}
 });
 
 export default function WizardWithError(props) {
 	let [currentError, setCurrentError] = useState(null);
+	let [isStepLoading, setIsStepLoading] = useState(false);
 
 	return (
 		<WizardWithErrorContext.Provider value={{
 			currentError,
 			setCurrentError,
-			resetCurrentError: () => setCurrentError(null)
+			resetCurrentError: () => setCurrentError(null),
+			isStepLoading,
+			setIsStepLoading
 		}}>
 			<Wizard {...props}/>
 		</WizardWithErrorContext.Provider>

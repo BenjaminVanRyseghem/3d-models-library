@@ -4,7 +4,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
 
 export default function TagsEditor({ tags, onChange = () => {} }) {
-	const [inputVisible, setInputVisible] = useState(false);
+	const [inputVisible, setInputVisible] = useState(tags.length > 0);
 	const [inputValue, setInputValue] = useState("");
 
 	const handleClose = (removedTag) => {
@@ -20,9 +20,6 @@ export default function TagsEditor({ tags, onChange = () => {} }) {
 		if (inputValue && tags.indexOf(inputValue) === -1) {
 			onChange([...tags, inputValue]);
 		}
-
-		setInputVisible(false);
-		setInputValue("");
 	};
 
 	const forMap = (tag) => {

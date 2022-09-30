@@ -1,11 +1,11 @@
 // eslint-disable-next-line filenames/match-exported
-const { v4: uuidv4 } = require("uuid");
-
 const root = "/Users/benjamin/Documents/3d models/stl/Archvillain Games - 2022-08 - Agama - Shattered Valley";
 
 let resolveEntitiesPromise = () => {};
 let resolveEntitiesAsMapPromise = () => {};
 let resolveTagsPromise = () => {};
+
+let getDatabase = import("../cli/database.js");
 
 let entitiesPromise = new Promise((resolve) => {
 	resolveEntitiesPromise = resolve;
@@ -19,28 +19,13 @@ let tagsPromise = new Promise((resolve) => {
 	resolveTagsPromise = resolve;
 });
 
-function appendToMap(entity, map = {}) {
-	entity.id ??= uuidv4();
-	map[entity.id] = entity;
-
-	entity.children.forEach((child) => {
-		appendToMap(child, map);
-	});
-}
-
 module.exports = {
 	init() {
-		return import("../cli/database.js")
+		return getDatabase
 			.then(({ getData }) => getData(root).then(({ entities, tags }) => {
 					resolveTagsPromise(tags);
 					resolveEntitiesPromise(entities);
-
-					let entitiesMap = {};
-					entities.forEach((entity) => {
-						appendToMap(entity, entitiesMap);
-					});
-
-					resolveEntitiesAsMapPromise(entitiesMap);
+					resolveEntitiesAsMapPromise(true);
 				}));
 	},
 	getAllTags() {
@@ -50,6 +35,7 @@ module.exports = {
 		return entitiesPromise;
 	},
 	getEntity(id) {
-		return entitiesAsMapPromise.then((map) => map[id]);
+		return Promise.all([getDatabase, entitiesAsMapPromise])
+			.then(([{ getEntity }]) => getEntity(id));
 	}
 };

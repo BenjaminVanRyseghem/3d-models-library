@@ -2,6 +2,7 @@ import "./import.css";
 import { importPageName } from "variables.js";
 import { Layout } from "antd";
 import { useElectronAPI } from "hooks.js";
+import { useNavigate } from "react-router-dom";
 import ChooseCover from "./steps/chooseCover.js";
 import ChooseKind from "./steps/chooseKind.js";
 import ChooseName from "./steps/chooseName.js";
@@ -48,6 +49,7 @@ function extractNameFromFolderPath(folderPath) {
 
 export default function Import() {
 	let electronAPI = useElectronAPI();
+	let navigate = useNavigate();
 	let [info, setInfo] = useState(initialInfoState);
 
 	useEffect(() => {
@@ -83,9 +85,13 @@ export default function Import() {
 			<Layout.Content>
 				<div className="import-wizard">
 					<WizardWithError
-						footer={<WizardFooter onDone={() => {
-							console.dir(info);
-						}}/>}
+						footer={<WizardFooter onDone={() => electronAPI.writeEntityFile({
+							answers: info,
+							folderPath: info.folderPath,
+							pictures: info.pictures.map((each) => ({ name: each }))
+						}).then(({ id }) => {
+							navigate(`/entity/${id}`);
+						})}/>}
 						wrapper={<div className="import-wizard-step"/>}
 					>
 						<Introduction/>

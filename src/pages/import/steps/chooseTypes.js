@@ -8,12 +8,12 @@ import React from "react";
 const { Paragraph } = Typography;
 const allTypes = [
 	{
-		name: "Unsupported",
-		value: "unsupported"
-	},
-	{
 		name: "Supported",
 		value: "supported"
+	},
+	{
+		name: "Unsupported",
+		value: "unsupported"
 	},
 	{
 		name: "Lys file",
@@ -38,7 +38,13 @@ export default function ChooseTypes({ types, setTypes }) {
 				resetCurrentError();
 				setTypes(values);
 			}}>
-			{allTypes.map(({ name, value }) => <Checkbox key={value} value={value}>{name}</Checkbox>)}
+				{allTypes.map(({ name, value }, index) => <Checkbox
+					key={value}
+					autoFocus={index === 0}
+					value={value}
+				>
+					{name}
+				</Checkbox>)}
 			</Checkbox.Group>
 		</>);
 	}

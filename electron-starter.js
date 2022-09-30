@@ -21,8 +21,8 @@ let mainWindow = null;
 function createWindow() {
 	// Create the browser window.
 	mainWindow = new BrowserWindow({
-		width: 800,
-		height: 600,
+		width: 1100,
+		height: 800,
 		webPreferences: {
 			nodeIntegration: true,
 			preload: path.join(__dirname, "electron", "preload.js")

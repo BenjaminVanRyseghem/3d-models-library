@@ -47,6 +47,30 @@ ipcMain.on("setTitle", (event, title) => {
 ipcMain.handle("getAllTags", () => loadState.getAllTags());
 ipcMain.handle("getAllEntities", () => loadState.getAllEntities());
 ipcMain.handle("getEntity", (event, id) => loadState.getEntity(id));
+ipcMain.handle("writeEntityFile", async (event, { answers, folderPath, pictures }) => {
+	let [{ writeEntityFile }, { getData, resolveParenthood }] = await Promise.all([
+		import("../cli/importFolder.js"),
+		import("../cli/database.js")
+	]);
+
+	await writeEntityFile({
+		answers: {
+			...answers,
+			cover: path.relative(folderPath, answers.cover)
+		},
+		folderPath,
+		pictures: pictures.map(({ name }) => ({ name: path.relative(folderPath, name) }))
+	});
+
+	let { entities: [entity] } = await getData(folderPath);
+
+	resolveParenthood({
+		folderPath,
+		entity
+	});
+
+	return entity;
+});
 ipcMain.handle("dialog:openDirectory", async (event) => {
 	const webContents = event.sender;
 	const win = BrowserWindow.fromWebContents(webContents);

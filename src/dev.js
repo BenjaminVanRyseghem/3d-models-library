@@ -39,6 +39,17 @@ if (!window.electronAPI && process.env.NODE_ENV === "development") {
 		getAllTags: () => Promise.resolve([]),
 		getAllEntities: () => loadData,
 		getEntity: (id) => loadData.then((data) => findEntity(id, data)),
+		writeEntityFile({ answers, folderPath, pictures }) {
+			// eslint-disable-next-line no-console
+			console.dir({
+				...answers,
+				folderPath,
+				pictures
+			});
+			return new Promise((resolve) => setTimeout(() => {
+				resolve();
+			}, 1000));
+		},
 		selectFolder: () => new Promise((resolve) => {
 			setTimeout(() => {
 				resolve({

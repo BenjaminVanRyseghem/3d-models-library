@@ -1,8 +1,11 @@
 import { migrateEntity } from "./migrate.js";
 import { readdir, readFile } from "fs/promises";
-import { resolve } from "path";
+import { resolve, sep } from "path";
+import { v4 as uuidv4 } from "uuid";
 
 export const version = 2;
+const entitiesMap = {};
+const pathToEntity = {};
 
 // eslint-disable-next-line max-statements
 export async function getData(dir) {
@@ -44,6 +47,12 @@ export async function getData(dir) {
 
 		local.children = Array.prototype.concat(...children);
 
+		appendToMap(local);
+
+		local.children.forEach((child) => {
+			child.parent = local.id;
+		});
+
 		return {
 			entities: [local],
 			tags: allTags,
@@ -51,11 +60,30 @@ export async function getData(dir) {
 		};
 	}
 
+	let entities = Array.prototype.concat(...allEntities.filter((each) => !!each));
+
+	entities.forEach((entity) => {
+		appendToMap(entity);
+	});
+
 	return {
-		entities: Array.prototype.concat(...allEntities.filter((each) => !!each)),
+		entities,
 		tags: allTags,
 		kinds: allKinds
 	};
+}
+
+export function getEntity(id) {
+	return entitiesMap[id];
+}
+
+export function resolveParenthood({ folderPath, entity }) {
+	let parentEntity = getParentEntity({ folderPath });
+	if (!parentEntity) return;
+
+	parentEntity.children ??= [];
+	parentEntity.children.push(entity);
+	entity.parent = parentEntity.id;
 }
 
 function buildEntity({ data, dir, tags, kinds }) {
@@ -110,3 +138,37 @@ function traverseFolder({ dir, tags, kinds }) {
 		return dirent.isDirectory() ? getData(res) : Promise.resolve(null);
 	};
 }
+
+function getParentEntity({ folderPath }) {
+	let parentFolder = getParentFolder(folderPath);
+	if (!parentFolder) {
+		return null;
+	}
+
+	if (!pathToEntity[parentFolder]) {
+		return getParentEntity({ folderPath: parentFolder });
+	}
+
+	return pathToEntity[parentFolder];
+}
+
+function getParentFolder(folder) {
+	let segments = folder.split(sep);
+	segments.pop();
+	if (segments[0] === "") {
+		segments.shift();
+		segments.unshift(sep);
+	}
+	return resolve(...segments);
+}
+
+function appendToMap(entity, map = entitiesMap) {
+	entity.id ??= uuidv4();
+	map[entity.id] = entity;
+	pathToEntity[entity.path] = entity;
+
+	entity.children.forEach((child) => {
+		appendToMap(child, map);
+	});
+}
+

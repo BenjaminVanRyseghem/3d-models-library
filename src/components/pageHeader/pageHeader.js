@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import React from "react";
 
-export default function PageHeader({ noBack = false, title, extra = [] }) {
+export default function PageHeader({ entity, noBack = false, title, extra = [] }) {
 	let navigate = useNavigate();
 
 	return (
@@ -13,12 +13,31 @@ export default function PageHeader({ noBack = false, title, extra = [] }) {
 			className="site-page-header-responsive"
 			extra={extra}
 			title={title}
-			onBack={() => navigate(-1)}
+			onBack={() => {
+				if (!entity) {
+					navigate(-1);
+					return;
+				}
+
+				if (!entity.parent) {
+					navigate(
+						"/",
+						{ replace: true }
+					);
+					return;
+				}
+
+				navigate(
+					`/entity/${entity.parent}`,
+					{ replace: true }
+				);
+			}}
 		/>
 	);
 }
 
 PageHeader.propTypes = {
+	entity: PropTypes.object,
 	extra: PropTypes.arrayOf(PropTypes.node),
 	noBack: PropTypes.bool,
 	title: PropTypes.string.isRequired

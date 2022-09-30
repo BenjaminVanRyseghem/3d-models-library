@@ -64,7 +64,7 @@ function Roadmap({ activeStep, stepCount, isLoading, isError = false, maxVisible
 	);
 }
 
-export default function WizardFooter({ onDone = () => {} }) {
+export default function WizardFooter({ onDone = () => Promise.resolve() }) {
 	let {
 		isLoading,
 		isLastStep,
@@ -74,12 +74,15 @@ export default function WizardFooter({ onDone = () => {} }) {
 		previousStep,
 		nextStep
 	} = useWizard();
-	let { currentError, setCurrentError, resetCurrentError } = useWizardError();
+	let { currentError, setCurrentError, resetCurrentError, isStepLoading, setIsStepLoading } = useWizardError();
 
 	async function handleOnNext() {
 		resetCurrentError();
 		if (isLastStep) {
-			onDone();
+			setIsStepLoading(true);
+			onDone().finally(() => {
+				setIsStepLoading(false);
+			});
 		}
 
 		try {
@@ -91,7 +94,7 @@ export default function WizardFooter({ onDone = () => {} }) {
 	}
 
 	return <div className="WizardFooter">
-		<Button className={classnames(["fixed-width", { hidden: isFirstStep }])} type="primary" onClick={() => {
+		<Button className={classnames(["fixed-width", { hidden: isFirstStep }])} disabled={isLoading || isStepLoading} type="primary" onClick={() => {
 			resetCurrentError();
 			previousStep();
 		}}>Previous</Button>
@@ -102,7 +105,7 @@ export default function WizardFooter({ onDone = () => {} }) {
 			maxVisibleSteps={5}
 			stepCount={stepCount}
 		/>
-		<Button className="fixed-width" danger={!!currentError} disabled={isLoading} type="primary" onClick={handleOnNext}>{isLastStep ? "Done" : "Next"}</Button>
+		<Button className="fixed-width" danger={!!currentError} loading={isLoading || isStepLoading} type="primary" onClick={handleOnNext}>{isLastStep ? "Done" : "Next"}</Button>
 	</div>;
 }
 
