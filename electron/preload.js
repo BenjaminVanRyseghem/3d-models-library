@@ -1,10 +1,12 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("electronAPI", {
-	setTitle: (title) => ipcRenderer.send("setTitle", title),
-	getAllTags: () => ipcRenderer.invoke("getAllTags"),
+	getAllAvailableTags: () => ipcRenderer.invoke("getAllAvailableTags"),
 	getAllEntities: () => ipcRenderer.invoke("getAllEntities"),
+	getAllTags: () => ipcRenderer.invoke("getAllTags"),
 	getEntity: (id) => ipcRenderer.invoke("getEntity", id),
+	getStlContent: (...args) => ipcRenderer.invoke("getStlContent", ...args),
 	selectFolder: () => ipcRenderer.invoke("dialog:openDirectory"),
+	setTitle: (title) => ipcRenderer.send("setTitle", title),
 	writeEntityFile: (...args) => ipcRenderer.invoke("writeEntityFile", ...args)
 });

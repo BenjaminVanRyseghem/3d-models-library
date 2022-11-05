@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain, dialog, protocol } = require("electron");
 const loadState = require("./loadState");
-const { readdir } = require("fs/promises");
+const { readdir, readFile } = require("fs/promises");
 const path = require("path");
 
 const modelExtensions = [".stl", ".lys", ".ctb", ".obj"];
@@ -44,6 +44,11 @@ ipcMain.on("setTitle", (event, title) => {
 });
 
 ipcMain.handle("getAllTags", () => loadState.getAllTags());
+ipcMain.handle("getAllAvailableTags", () => loadState.getAllTags().then((tagsMap) => {
+		let tags = Object.keys(tagsMap);
+		tags.sort();
+		return tags;
+	}));
 ipcMain.handle("getAllEntities", () => loadState.getAllEntities());
 ipcMain.handle("getEntity", (event, id) => loadState.getEntity(id));
 ipcMain.handle("writeEntityFile", async (event, { answers, folderPath, pictures }) => {
@@ -62,10 +67,7 @@ ipcMain.handle("writeEntityFile", async (event, { answers, folderPath, pictures 
 	}
 
 	await writeEntityFile({
-		answers: {
-			...answers,
-			cover: path.relative(folderPath, answers.cover)
-		},
+		answers,
 		folderPath,
 		pictures: pictures.map(({ name }) => ({ name: path.relative(folderPath, name) }))
 	});
@@ -97,6 +99,8 @@ ipcMain.handle("dialog:openDirectory", async (event) => {
 		...info
 	};
 });
+
+ipcMain.handle("getStlContent", (event, filePath) => readFile(filePath));
 
 app.whenReady().then(() => {
 	protocol.registerFileProtocol("resource", (req, callback) => {

@@ -1,6 +1,6 @@
+import { dirname, resolve, sep } from "path";
 import { migrateEntity } from "./migrate.js";
 import { readdir, readFile } from "fs/promises";
-import { resolve, sep } from "path";
 import { v4 as uuidv4 } from "uuid";
 
 export const version = 2;
@@ -142,6 +142,11 @@ function traverseFolder({ dir, tags, kinds }) {
 function getParentEntity({ folderPath }) {
 	let parentFolder = getParentFolder(folderPath);
 	if (!parentFolder) {
+		return null;
+	}
+
+	if (dirname(parentFolder) === parentFolder) {
+		// you hit root folder
 		return null;
 	}
 

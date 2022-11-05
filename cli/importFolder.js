@@ -151,21 +151,30 @@ function writeEntityFileFromAnswer({ folderPath, pictures }) {
 	});
 }
 
-export function writeEntityFile({ answers, folderPath, pictures }) {
+export async function writeEntityFile({ answers, folderPath, pictures }) {
 	let data = {
 		name: answers.name,
 		kind: answers.kind,
 		tags: answers.tags,
 		types: answers.types
 	};
+
 	data.pictures = pictures.map((picture) => picture.name);
 
 	if (answers.cover) {
-		data.cover = answers.cover;
+		data.cover = path.relative(folderPath, answers.cover);
 	}
 
 	if (answers.createArchive) {
 		data.archive = `${answers.name}.zip`;
+	}
+
+	if (!data.pictures.length) {
+		let name = `${data.name}.png`;
+		let previewPath = path.resolve(folderPath, name);
+		await writeFile(previewPath, Buffer.from(answers.preview));
+		data.pictures = [name];
+		data.cover = name;
 	}
 
 	data.version = version;

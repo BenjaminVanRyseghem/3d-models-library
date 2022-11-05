@@ -1,11 +1,12 @@
 import { arrayOf, func, string } from "prop-types";
-import { Input, Tag } from "antd";
+import { AutoComplete, Tag } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
 
-export default function TagsEditor({ tags, onChange = () => {} }) {
+export default function TagsEditor({ tags, allAvailableTags, onChange = () => {} }) {
 	const [inputVisible, setInputVisible] = useState(tags.length > 0);
 	const [inputValue, setInputValue] = useState("");
+	let [isError, setIsError] = useState(false);
 
 	const handleClose = (removedTag) => {
 		const newTags = tags.filter((tag) => tag !== removedTag);
@@ -16,9 +17,11 @@ export default function TagsEditor({ tags, onChange = () => {} }) {
 		setInputVisible(true);
 	};
 
-	const handleInputConfirm = () => {
-		if (inputValue && tags.indexOf(inputValue) === -1) {
-			onChange([...tags, inputValue]);
+	const handleInputConfirm = (value) => {
+		if (value && tags.indexOf(value) === -1) {
+			onChange([...tags, value]);
+		} else {
+			setIsError(true);
 		}
 	};
 
@@ -55,19 +58,26 @@ export default function TagsEditor({ tags, onChange = () => {} }) {
 			/>
 			{tags.map(forMap)}
 			{inputVisible && (
-				<Input
+				<AutoComplete
 					autoFocus
+					dropdownMatchSelectWidth={false}
+					filterOption={
+						(value, option) => option.value.toUpperCase().indexOf(value.toUpperCase()) !== -1
+					}
+					options={allAvailableTags.map((value) => ({ value }))}
 					size="small"
+					status={isError ? "error" : undefined}
 					style={{
 						width: 78
 					}}
 					type="text"
 					value={inputValue}
-					onBlur={handleInputConfirm}
-					onChange={(event) => {
-						setInputValue(event.target.value);
+					onBlur={() => handleInputConfirm(inputValue)}
+					onChange={(value) => {
+						setInputValue(value);
+						setIsError(false);
 					}}
-					onPressEnter={handleInputConfirm}
+					onSelect={handleInputConfirm}
 				/>
 			)}
 			{!inputVisible && (
@@ -80,6 +90,7 @@ export default function TagsEditor({ tags, onChange = () => {} }) {
 }
 
 TagsEditor.propTypes = {
+	allAvailableTags: arrayOf(string),
 	onChange: func,
 	tags: arrayOf(string)
 };

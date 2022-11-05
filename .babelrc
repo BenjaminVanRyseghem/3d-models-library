@@ -6,7 +6,12 @@
         "targets": "defaults"
       }
     ],
-    "react-app"
+    [
+      "react-app",
+      {
+        "absoluteRuntime": false
+      }
+    ]
   ],
   "plugins": [
     [

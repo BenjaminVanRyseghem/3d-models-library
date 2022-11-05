@@ -1,5 +1,5 @@
 // eslint-disable-next-line filenames/match-exported
-const root = "/Users/benjamin/Documents/3d models/stl/Archvillain Games - 2022-08 - Agama - Shattered Valley";
+const root = "/Users/benjamin/Documents/3d models/stl";
 
 let resolveEntitiesPromise = () => {};
 let resolveEntitiesAsMapPromise = () => {};
