@@ -20,7 +20,7 @@ export default function PreviewStl({ fileUrl }) {
 	});
 	let [stlContent, setStlContent] = useState();
 	let getStlContent = useCallback((api) => api.getStlContent(fileUrl), [fileUrl]);
-	useElectronAPIPromise(getStlContent).then(setStlContent);
+	useElectronAPIPromise(getStlContent, setStlContent);
 
 	if (!stlContent) {
 		return <Spin size="large"/>;

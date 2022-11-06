@@ -45,7 +45,7 @@ export default function Import() {
 	let [info, setInfo] = useState(initialInfoState);
 	let [allAvailableTags, setAllAvailableTags] = useState([]);
 
-	useElectronAPIPromise(getAllAvailableTags).then(setAllAvailableTags);
+	useElectronAPIPromise(getAllAvailableTags, setAllAvailableTags);
 
 	useEffect(() => {
 		electronAPI.setTitle(importPageName);

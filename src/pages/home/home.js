@@ -18,7 +18,7 @@ export default function Home() {
 		electronAPI.setTitle(defaultAppName);
 	}, [electronAPI]);
 
-	useElectronAPIPromise(getAllEntities).then(setEntities);
+	useElectronAPIPromise(getAllEntities, setEntities);
 
 	if (!entities) {
 		return "loading";

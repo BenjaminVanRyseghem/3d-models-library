@@ -18,7 +18,7 @@ export default function Entity() {
 	let electronAPI = useElectronAPI();
 	let getEntity = useCallback((api) => api.getEntity(params.id), [params.id]);
 
-	useElectronAPIPromise(getEntity).then(setEntity);
+	useElectronAPIPromise(getEntity, setEntity);
 
 	useEffect(() => {
 		electronAPI.setTitle(entity?.name ?? defaultAppName);

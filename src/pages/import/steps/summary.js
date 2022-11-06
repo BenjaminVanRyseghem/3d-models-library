@@ -1,6 +1,6 @@
 import { asLocalResource } from "helpers.js";
 import { Descriptions, Typography } from "antd";
-import { object } from "prop-types";
+import { node, number, object } from "prop-types";
 import AbstractStep from "pages/import/steps/abstractStep.js";
 import ImagePreview from "components/imagePreview/imagePreview.js";
 import React from "react";
@@ -42,6 +42,11 @@ export default function Summary({ info }) {
 		<AbstractStep content={<Content/>} title={"Summary"}/>
 	);
 }
+
+EllipsisMiddle.propTypes = {
+	children: node.isRequired,
+	suffixCount: number.isRequired
+};
 
 Summary.propTypes = {
 	info: object.isRequired
