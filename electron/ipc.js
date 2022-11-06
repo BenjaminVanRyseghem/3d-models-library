@@ -12,9 +12,15 @@ async function getInfo(dir) {
 	let pictures = [];
 	let models = [];
 	let archives = [];
+	let alreadyImported = false;
+
 	dirents.forEach((dirent) => {
 		if (dirent.isFile()) {
 			let ext = path.extname(dirent.name).toLowerCase();
+
+			if (dirent.name === ".3d-model-entity.json") {
+				alreadyImported = true;
+			}
 
 			if (modelExtensions.indexOf(ext) !== -1) {
 				models.push(dirent);
@@ -33,7 +39,8 @@ async function getInfo(dir) {
 	return {
 		pictures,
 		models,
-		archives
+		archives,
+		alreadyImported
 	};
 }
 
@@ -81,7 +88,7 @@ ipcMain.handle("writeEntityFile", async (event, { answers, folderPath, pictures 
 
 	return entity;
 });
-ipcMain.handle("dialog:openDirectory", async (event) => {
+ipcMain.handle("selectFolder", async (event) => {
 	const webContents = event.sender;
 	const win = BrowserWindow.fromWebContents(webContents);
 	const { canceled, filePaths } = await dialog.showOpenDialog(win, {

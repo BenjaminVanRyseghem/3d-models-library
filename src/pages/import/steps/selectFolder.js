@@ -2,6 +2,7 @@ import { Button, Spin, Typography } from "antd";
 import { useElectronAPI } from "hooks.js";
 import { useWizard } from "react-use-wizard";
 import { useWizardError } from "components/wizardWithError/wizardWithError.js";
+import { WarningOutlined } from "@ant-design/icons";
 import AbstractStep from "pages/import/steps/abstractStep.js";
 import classnames from "classnames";
 import PropTypes from "prop-types";
@@ -48,6 +49,13 @@ export default function SelectFolder({ info, setInfo }) {
 						<Paragraph>
 							You selected <Text keyboard>{info.folderPath}</Text>.
 						</Paragraph>
+
+						{
+							info.alreadyImported &&
+							<Paragraph>
+								<Text type="warning"><WarningOutlined/></Text> You have already imported this folder
+							</Paragraph>
+						}
 						<Button
 							danger
 							onClick={() => setInfo(null)}

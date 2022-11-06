@@ -1,8 +1,8 @@
 import "pages/entity/entity.css";
-import { Col, Descriptions, Layout, Row, Skeleton } from "antd";
+import { Affix, Button, Col, Descriptions, Layout, Row, Skeleton } from "antd";
 import { defaultAppName } from "variables.js";
 import { func, node, object } from "prop-types";
-import { PictureOutlined } from "@ant-design/icons";
+import { EditOutlined, PictureOutlined } from "@ant-design/icons";
 import { resolveEntityPicture } from "helpers.js";
 import { useElectronAPI, useElectronAPIPromise } from "hooks.js";
 import { useParams } from "react-router-dom";
@@ -126,5 +126,6 @@ InnerContent.propTypes = {
 	entity: object,
 	info: node,
 	setEntity: func,
+	setEntityToken: func,
 	title: node
 };
