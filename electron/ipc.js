@@ -101,6 +101,7 @@ ipcMain.handle("dialog:openDirectory", async (event) => {
 });
 
 ipcMain.handle("getStlContent", (event, filePath) => readFile(filePath));
+ipcMain.handle("reloadEntitiesDB", () => loadState.init());
 
 app.whenReady().then(() => {
 	protocol.registerFileProtocol("resource", (req, callback) => {

@@ -1,7 +1,8 @@
-import { dirname, resolve, sep } from "path";
+import { jsonFileName } from "./constants.js";
 import { migrateEntity } from "./migrate.js";
-import { readdir, readFile } from "fs/promises";
+import { readdir, readFile, writeFile } from "fs/promises";
 import { v4 as uuidv4 } from "uuid";
+import path, { dirname, resolve, sep } from "path";
 
 export const version = 2;
 const entitiesMap = {};
@@ -79,7 +80,9 @@ export function getEntity(id) {
 
 export function resolveParenthood({ folderPath, entity }) {
 	let parentEntity = getParentEntity({ folderPath });
-	if (!parentEntity) return;
+	if (!parentEntity) {
+		return;
+	}
 
 	parentEntity.children ??= [];
 	parentEntity.children.push(entity);
@@ -116,7 +119,7 @@ function buildEntity({ data, dir, tags, kinds }) {
 function traverseFolder({ dir, tags, kinds }) {
 	return (dirent) => {
 		let res = resolve(dir, dirent.name);
-		if (dirent.name === ".3d-model-entity.json") {
+		if (dirent.name === jsonFileName) {
 			return readFile(res)
 				.then((buffer) => {
 					try {
@@ -168,12 +171,31 @@ function getParentFolder(folder) {
 }
 
 function appendToMap(entity, map = entitiesMap) {
+	let shouldUpdate = shouldUpdateEntity(entity);
 	entity.id ??= uuidv4();
 	map[entity.id] = entity;
 	pathToEntity[entity.path] = entity;
 
+	if (shouldUpdate) {
+		writeEntity(entity);
+	}
+
 	entity.children.forEach((child) => {
 		appendToMap(child, map);
 	});
+}
+
+function shouldUpdateEntity(entity) {
+	return !entity.id || entity.parent;
+}
+
+function writeEntity(entity) {
+	let {
+		children: _,
+		path: __,
+		parent: ___,
+		...toWrite
+	} = entity;
+	writeFile(path.resolve(entity.path, jsonFileName), JSON.stringify(toWrite, null, 2));
 }
 

@@ -1,4 +1,6 @@
+import { jsonFileName } from "./constants.js";
 import { readdir, writeFile } from "fs/promises";
+import { v4 as uuidv4 } from "uuid";
 import { version } from "./database.js";
 import inquirer from "inquirer";
 import path from "path";
@@ -179,7 +181,8 @@ export async function writeEntityFile({ answers, folderPath, pictures }) {
 
 	data.version = version;
 
-	let file = path.resolve(folderPath, ".3d-model-entity.json");
+	let file = path.resolve(folderPath, jsonFileName);
+	data.id ??= uuidv4();
 	return writeFile(file, JSON.stringify(data, null, 2));
 }
 

@@ -1,32 +1,37 @@
 // eslint-disable-next-line filenames/match-exported
 const root = "/Users/benjamin/Documents/3d models/stl";
+let getDatabase = import("../cli/database.js");
 
 let resolveEntitiesPromise = () => {};
 let resolveEntitiesAsMapPromise = () => {};
 let resolveTagsPromise = () => {};
 
-let getDatabase = import("../cli/database.js");
+let entitiesPromise = new Promise(() => {});
+let entitiesAsMapPromise = new Promise(() => {});
+let tagsPromise = new Promise(() => {});
 
-let entitiesPromise = new Promise((resolve) => {
-	resolveEntitiesPromise = resolve;
-});
+function reset() {
+	entitiesPromise = new Promise((resolve) => {
+		resolveEntitiesPromise = resolve;
+	});
 
-let entitiesAsMapPromise = new Promise((resolve) => {
-	resolveEntitiesAsMapPromise = resolve;
-});
+	entitiesAsMapPromise = new Promise((resolve) => {
+		resolveEntitiesAsMapPromise = resolve;
+	});
 
-let tagsPromise = new Promise((resolve) => {
-	resolveTagsPromise = resolve;
-});
+	tagsPromise = new Promise((resolve) => {
+		resolveTagsPromise = resolve;
+	});
+}
 
 module.exports = {
-	init() {
-		return getDatabase
-			.then(({ getData }) => getData(root).then(({ entities, tags }) => {
-					resolveTagsPromise(tags);
-					resolveEntitiesPromise(entities);
-					resolveEntitiesAsMapPromise(true);
-				}));
+	async init() {
+		reset();
+		let { getData } = await getDatabase;
+		let { entities, tags } = await getData(root);
+		resolveTagsPromise(tags);
+		resolveEntitiesPromise(entities);
+		resolveEntitiesAsMapPromise(true);
 	},
 	getAllTags() {
 		return tagsPromise;

@@ -88,6 +88,7 @@ export default function Import() {
 							folderPath: info.folderPath,
 							pictures: info.pictures.map((each) => ({ name: each }))
 						}).then(({ id }) => {
+							electronAPI.reloadEntitiesDB();
 							navigate(`/entity/${id}`);
 						})}/>}
 						wrapper={<div className="import-wizard-step"/>}

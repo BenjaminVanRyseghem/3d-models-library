@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export function useElectronAPI() {
 	return window.electronAPI;
@@ -28,7 +28,7 @@ export function useElectronAPIPromiseOld(fn) { // I would like to understand why
 	return result;
 }
 
-export function useElectronAPIPromise(fn, cb) {
+export function useElectronAPIPromise(fn, cb, token = 0) {
 	let { electronAPI } = window;
 
 	useEffect(() => {
@@ -44,5 +44,5 @@ export function useElectronAPIPromise(fn, cb) {
 		return () => {
 			isCancelled = true;
 		};
-	}, [fn, cb, electronAPI]);
+	}, [fn, cb, electronAPI, token]);
 }
