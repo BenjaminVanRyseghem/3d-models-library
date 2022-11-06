@@ -27,10 +27,17 @@ const EllipsisMiddle = ({ suffixCount, children }) => {
 
 export default function Summary({ info }) {
 	function Content() {
+		let coverSource = asLocalResource(info.cover);
+
+		if (!info.cover && info.preview) {
+			let blob = new Blob([info.preview]);
+			coverSource = URL.createObjectURL(blob);
+		}
+
 		return (<Descriptions bordered column={2}>
 				<Descriptions.Item className="ellipsis-content" label="Folder" span={2}><EllipsisMiddle suffixCount={12}>{info.folderPath}</EllipsisMiddle></Descriptions.Item>
 				<Descriptions.Item label="Name">{info.name}</Descriptions.Item>
-				<Descriptions.Item label="Picture"><ImagePreview src={asLocalResource(info.cover)} title={"Cover"}/></Descriptions.Item>
+				<Descriptions.Item label="Picture"><ImagePreview src={coverSource} title={"Cover"}/></Descriptions.Item>
 				<Descriptions.Item label="Kind">{info.kind}</Descriptions.Item>
 				<Descriptions.Item label="Tags">{info.tags.join(", ") || "-"}</Descriptions.Item>
 				<Descriptions.Item label="Types">{info.types.join(", ")}</Descriptions.Item>
