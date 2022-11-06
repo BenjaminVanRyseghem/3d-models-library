@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog, protocol } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog, protocol, shell } = require("electron");
 const loadState = require("./loadState");
 const { readdir, readFile } = require("fs/promises");
 const path = require("path");
@@ -52,10 +52,10 @@ ipcMain.on("setTitle", (event, title) => {
 
 ipcMain.handle("getAllTags", () => loadState.getAllTags());
 ipcMain.handle("getAllAvailableTags", () => loadState.getAllTags().then((tagsMap) => {
-		let tags = Object.keys(tagsMap);
-		tags.sort();
-		return tags;
-	}));
+	let tags = Object.keys(tagsMap);
+	tags.sort();
+	return tags;
+}));
 ipcMain.handle("getAllEntities", () => loadState.getAllEntities());
 ipcMain.handle("getEntity", (event, id) => loadState.getEntity(id));
 ipcMain.handle("writeEntityFile", async (event, { answers, folderPath, pictures }) => {
@@ -109,6 +109,7 @@ ipcMain.handle("selectFolder", async (event) => {
 
 ipcMain.handle("getStlContent", (event, filePath) => readFile(filePath));
 ipcMain.handle("reloadEntitiesDB", () => loadState.init());
+ipcMain.handle("editConfigFile", (event, folderPath) => shell.openPath(path.resolve(folderPath, ".3d-model-entity.json")));
 
 app.whenReady().then(() => {
 	protocol.registerFileProtocol("resource", (req, callback) => {

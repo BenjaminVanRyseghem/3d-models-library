@@ -10,10 +10,12 @@ export default function NavigationActions({ refresh = () => {} }) {
 
 	return (
 		<Space>
+			<NavLink key="import" to="/import">
+				<Button icon={<ImportOutlined/>}>Import</Button>
+			</NavLink>
 			<Button
 				key="reload"
 				icon={<ReloadOutlined/>}
-				type="primary"
 				onClick={() => {
 					electronAPI.reloadEntitiesDB();
 					refresh();
@@ -21,8 +23,6 @@ export default function NavigationActions({ refresh = () => {} }) {
 			>
 				Refresh
 			</Button>
-			<NavLink key="import" to="/import">
-				<Button icon={<ImportOutlined/>} type="primary">Import</Button></NavLink>
 		</Space>
 	);
 }

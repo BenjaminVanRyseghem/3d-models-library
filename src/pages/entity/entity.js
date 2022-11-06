@@ -1,8 +1,8 @@
 import "pages/entity/entity.css";
-import { Affix, Button, Col, Descriptions, Layout, Row, Skeleton } from "antd";
+import { Button, Col, Descriptions, Layout, Row, Skeleton } from "antd";
 import { defaultAppName } from "variables.js";
-import { func, node, object } from "prop-types";
 import { EditOutlined, PictureOutlined } from "@ant-design/icons";
+import { func, node, object } from "prop-types";
 import { resolveEntityPicture } from "helpers.js";
 import { useElectronAPI, useElectronAPIPromise } from "hooks.js";
 import { useParams } from "react-router-dom";
@@ -65,6 +65,8 @@ function InnerContent({
 	info = <Info entity={entity}/>,
 	children
 }) {
+	let electronAPI = useElectronAPI();
+
 	return (
 		<div className="page entity">
 			<PageHeader
@@ -73,7 +75,16 @@ function InnerContent({
 					<NavigationActions key="actions" refresh={() => {
 						setEntity(null);
 						setEntityToken((token) => token + 1);
-					}}/>
+					}}/>,
+					<Button
+						key="edit"
+						icon={<EditOutlined/>}
+						type="link"
+						onClick={() => {
+							electronAPI.editConfigFile(entity.path);
+						}}>
+						Edit
+					</Button>
 				]}
 				title={title}
 			/>

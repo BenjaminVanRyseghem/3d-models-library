@@ -1,6 +1,7 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("electronAPI", {
+	editConfigFile: (...args) => ipcRenderer.invoke("editConfigFile", ...args),
 	getAllAvailableTags: () => ipcRenderer.invoke("getAllAvailableTags"),
 	getAllEntities: () => ipcRenderer.invoke("getAllEntities"),
 	getAllTags: () => ipcRenderer.invoke("getAllTags"),
