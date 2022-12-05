@@ -1,0 +1,13 @@
+.PreviewStlList {
+  display: flex;
+  flex-direction: row;
+
+  & .PreviewStl {
+    flex-grow: 1;
+  }
+
+  & .files {
+    border-left: 1px solid black;
+    padding: 8px;
+  }
+}

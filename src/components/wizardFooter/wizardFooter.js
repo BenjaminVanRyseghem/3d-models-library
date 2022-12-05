@@ -37,15 +37,17 @@ function Roadmap({ activeStep, stepCount, isLoading, isError = false, maxVisible
 			<div className="Roadmap">
 				<Steps current={activeStep}
 					initial={initial}
-					size="sm"
-					status={isError ? "error" : "process"}
-				>
-					{stepsRange.map((index) => {
+					items={stepsRange.map((index) => {
 						let icon = isLoading && index === activeIndex ? <LoadingOutlined/> : undefined;
 						let status = index < activeIndex ? "finish" : undefined;
-						return <Steps.Step key={index} icon={icon} status={status}/>;
+						return {
+							icon,
+							status
+						};
 					})}
-				</Steps>
+					size="sm"
+					status={isError ? "error" : "process"}
+				/>
 			</div>
 		);
 	}

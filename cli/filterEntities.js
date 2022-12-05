@@ -11,20 +11,22 @@ export function fuzzyMatchName(entities, name) {
 	if (!name) {
 		return entities;
 	}
+	let fuse = new Fuse(entities, {
+		threshold: 0.3,
+		keys: ["name"]
+	});
 
-	let fuse = new Fuse(entities, { keys: ["name"] });
-	return fuse.search(name);
+	return fuse.search(name).map((each) => each.item);
 }
 
-function searchFiltersAndKinds(entity, tags, kinds) {
+function searchFiltersAndKinds(entity, tags = [], kinds = []) {
 	let remainingTags = entity.tags ? tags.filter((tag) => entity.tags.indexOf(tag) === -1) : tags;
 
-	let remainingKinds = { ...kinds };
-	delete remainingKinds[entity.kind];
+	let matchKind = kinds.length === 0 || kinds.some((each) => each === entity.kind);
 
 	return {
 		remainingTags,
-		remainingKinds
+		matchKind
 	};
 }
 
@@ -33,15 +35,15 @@ function innerFilterEntities(entities, { tags, kinds }) {
 	entities.forEach((entity) => {
 		let {
 			remainingTags,
-			remainingKinds
+			matchKind
 		} = searchFiltersAndKinds(entity, tags, kinds);
 
-		if (!remainingTags.length && !remainingKinds.length) {
+		if (!remainingTags.length && matchKind) {
 			result.push(entity);
 		}
 		result.push(...innerFilterEntities(entity.children, {
-			tags: remainingTags,
-			kinds: remainingKinds
+			tags: remainingTags.length ? remainingTags : tags,
+			kinds
 		}));
 	});
 

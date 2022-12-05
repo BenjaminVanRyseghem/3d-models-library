@@ -6,11 +6,11 @@ import TagsEditor from "components/tagsEditor/tagsEditor.js";
 
 const { Paragraph } = Typography;
 
-export default function ChooseTags({ tags, setTags }) {
+export default function ChooseTags({ tags, setTags, allAvailableTags }) {
 	function Content() {
 		return (<>
 			<Paragraph>Please add optional tags to the entry</Paragraph>
-			<TagsEditor tags={tags} onChange={setTags}/>
+			<TagsEditor allAvailableTags={allAvailableTags} tags={tags} onChange={setTags}/>
 		</>);
 	}
 
@@ -20,6 +20,7 @@ export default function ChooseTags({ tags, setTags }) {
 }
 
 ChooseTags.propTypes = {
+	allAvailableTags: arrayOf(string),
 	setTags: func.isRequired,
 	tags: arrayOf(string).isRequired
 };

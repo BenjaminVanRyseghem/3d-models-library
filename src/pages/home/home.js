@@ -1,43 +1,60 @@
 import "pages/home/home.css";
-import { Button, Layout } from "antd";
 import { defaultAppName } from "variables.js";
-import { ImportOutlined } from "@ant-design/icons";
-import { NavLink } from "react-router-dom";
+import { Layout, Spin } from "antd";
+import { SearchForm } from "components/searchForm/searchForm.js";
 import { useElectronAPI, useElectronAPIPromise } from "hooks.js";
 import EntityCard from "components/entityCard/entityCard.js";
+import NavigationActions from "components/navigationActions/navigationActions.js";
 import PageHeader from "components/pageHeader/pageHeader.js";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
-const getAllEntities = (api) => api.getAllEntities();
+const getAllAvailableKinds = (api) => api.getAllAvailableKinds();
+const getAllAvailableTags = (api) => api.getAllAvailableTags();
 
 export default function Home() {
 	let [entities, setEntities] = useState(null);
+	let [kinds, setKinds] = useState(null);
+	let [tags, setTags] = useState(null);
+	let [entitiesToken, setEntitiesToken] = useState(0);
 	let electronAPI = useElectronAPI();
+	let [filters, setFilters] = useState({});
 
 	useEffect(() => {
 		electronAPI.setTitle(defaultAppName);
 	}, [electronAPI]);
 
-	useElectronAPIPromise(getAllEntities).then(setEntities);
+	let getAllEntities = useCallback((api) => api.getAllEntities(filters), [filters]);
+
+	useElectronAPIPromise(getAllEntities, setEntities, entitiesToken);
+	useElectronAPIPromise(getAllAvailableKinds, setKinds, entitiesToken);
+	useElectronAPIPromise(getAllAvailableTags, setTags, entitiesToken);
 
 	if (!entities) {
-		return "loading";
+		return <Spin size="large"/>;
 	}
 
 	return (
 		<div className="page home">
 			<PageHeader
 				noBack
-				extra={[<NavLink key="import" to="/import"><Button type="primary"><ImportOutlined/> Import</Button></NavLink>]}
+				extra={[
+					<NavigationActions key="actions" refresh={() => {
+						setEntities(null);
+						setEntitiesToken((token) => token + 1);
+					}}/>
+				]}
 				title="All models"
 			/>
-			<Layout.Content>
-				<div className="actions">
-				</div>
-				<div className="entities">
-					{entities.map((entity) => <EntityCard key={entity.id} entity={entity}/>)}
-				</div>
-			</Layout.Content>
+			<Layout>
+				<Layout.Sider>
+					<SearchForm kinds={kinds} tags={tags} onChange={setFilters}/>
+				</Layout.Sider>
+				<Layout.Content>
+					<div className="entities">
+						{entities.map((entity) => <EntityCard key={entity.id} entity={entity}/>)}
+					</div>
+				</Layout.Content>
+			</Layout>
 		</div>
 	);
 }

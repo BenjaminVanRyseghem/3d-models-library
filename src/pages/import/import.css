@@ -47,6 +47,10 @@
         gap: 1ch;
         margin-bottom: 1ch;
       }
+
+      & .PreviewStl {
+        min-height: 500px;
+      }
     }
   }
 

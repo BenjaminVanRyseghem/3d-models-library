@@ -1,24 +1,26 @@
 import "pages/entity/entity.css";
-import { Col, Descriptions, Layout, Row, Skeleton } from "antd";
+import { Button, Col, Descriptions, Layout, Row, Skeleton } from "antd";
 import { defaultAppName } from "variables.js";
-import { PictureOutlined } from "@ant-design/icons";
+import { EditOutlined, PictureOutlined } from "@ant-design/icons";
+import { func, node, object } from "prop-types";
 import { resolveEntityPicture } from "helpers.js";
 import { useElectronAPI, useElectronAPIPromise } from "hooks.js";
 import { useParams } from "react-router-dom";
 import EntityCard from "components/entityCard/entityCard.js";
 import EntityPicture from "components/entityPicture/entityPicture.js";
 import ImagePreviewGroup from "components/imagePreviewGroup/imagePreviewGroup.js";
+import NavigationActions from "components/navigationActions/navigationActions.js";
 import PageHeader from "components/pageHeader/pageHeader.js";
-import PropTypes from "prop-types";
 import React, { useCallback, useEffect, useState } from "react";
 
 export default function Entity() {
 	let params = useParams();
+	let [entityToken, setEntityToken] = useState(0);
 	let [entity, setEntity] = useState(null);
 	let electronAPI = useElectronAPI();
 	let getEntity = useCallback((api) => api.getEntity(params.id), [params.id]);
 
-	useElectronAPIPromise(getEntity).then(setEntity);
+	useElectronAPIPromise(getEntity, setEntity, entityToken);
 
 	useEffect(() => {
 		electronAPI.setTitle(entity?.name ?? defaultAppName);
@@ -38,11 +40,16 @@ export default function Entity() {
 		);
 	}
 
+	let { children } = entity;
+	children.sort((one, another) => (one.name < another.name ? -1 : 1));
+
 	return (
 		<InnerContent
 			entity={entity}
+			setEntity={setEntity}
+			setEntityToken={setEntityToken}
 		>
-			{entity.children.map((child) => <Col key={child.id} span={6}>
+			{children.map((child) => <Col key={child.id} span={6}>
 				<EntityCard entity={child}/>
 			</Col>)}
 		</InnerContent>
@@ -51,14 +58,36 @@ export default function Entity() {
 
 function InnerContent({
 	entity,
+	setEntity,
+	setEntityToken,
 	title = entity.name,
 	cover = <EntityPicture full entity={entity}/>,
 	info = <Info entity={entity}/>,
 	children
 }) {
+	let electronAPI = useElectronAPI();
+
 	return (
 		<div className="page entity">
-			<PageHeader entity={entity} title={title}/>
+			<PageHeader
+				entity={entity}
+				extra={[
+					<NavigationActions key="actions" refresh={() => {
+						setEntity(null);
+						setEntityToken((token) => token + 1);
+					}}/>,
+					<Button
+						key="edit"
+						icon={<EditOutlined/>}
+						type="link"
+						onClick={() => {
+							electronAPI.editConfigFile(entity.path);
+						}}>
+						Edit
+					</Button>
+				]}
+				title={title}
+			/>
 			<Layout.Content>
 				<div className="cover">
 					{cover}
@@ -99,13 +128,15 @@ function Info({ entity }) {
 }
 
 Info.propTypes = {
-	entity: PropTypes.object.isRequired
+	entity: object.isRequired
 };
 
 InnerContent.propTypes = {
-	children: PropTypes.node,
-	cover: PropTypes.node,
-	entity: PropTypes.object,
-	info: PropTypes.node,
-	title: PropTypes.node
+	children: node,
+	cover: node,
+	entity: object,
+	info: node,
+	setEntity: func,
+	setEntityToken: func,
+	title: node
 };

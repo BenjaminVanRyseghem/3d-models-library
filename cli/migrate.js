@@ -1,4 +1,5 @@
 import { getData, version } from "./database.js";
+import { jsonFileName } from "./constants.js";
 import { writeFile } from "fs/promises";
 import path from "path";
 
@@ -24,7 +25,7 @@ export async function migrateEntity({ entity: oldEntity, preventTraverse = false
 		await Promise.all(entity.children.map((child) => migrateEntity({ entity: child })));
 	}
 
-	let file = path.resolve(entity.path, ".3d-model-entity.json");
+	let file = path.resolve(entity.path, jsonFileName);
 	delete entity.path;
 	await writeFile(file, JSON.stringify(entity, null, 2));
 	return entity;

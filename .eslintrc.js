@@ -27,6 +27,12 @@ module.exports = {
 		"import/resolver": "webpack"
 	},
 	rules: {
+		"react/jsx-first-prop-new-line": ["error", "multiline-multiprop"],
+		"react/jsx-max-props-per-line": ["error", { maximum: 1 }],
+		"react/jsx-indent-props": ["error", "tab"],
+		"react/jsx-closing-tag-location": ["error"],
+		"react/jsx-wrap-multilines": ["error"],
+		"react/jsx-closing-bracket-location": ["error", "line-aligned"],
 		"id-length": [
 			"error",
 			{

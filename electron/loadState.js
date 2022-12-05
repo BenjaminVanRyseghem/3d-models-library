@@ -1,38 +1,67 @@
 // eslint-disable-next-line filenames/match-exported
-const root = "/Users/benjamin/Documents/3d models/stl/Archvillain Games - 2022-08 - Agama - Shattered Valley";
+const root = "/Users/benjamin/Documents/3d models/stl";
+let getDatabase = import("../cli/database.js");
+let getSearch = import("../cli/search.js");
 
 let resolveEntitiesPromise = () => {};
 let resolveEntitiesAsMapPromise = () => {};
 let resolveTagsPromise = () => {};
+let resolveKindsPromise = () => {};
 
-let getDatabase = import("../cli/database.js");
+let entitiesPromise = new Promise(() => {});
+let entitiesAsMapPromise = new Promise(() => {});
+let tagsPromise = new Promise(() => {});
+let kindsPromise = new Promise(() => {});
 
-let entitiesPromise = new Promise((resolve) => {
-	resolveEntitiesPromise = resolve;
-});
+function reset() {
+	entitiesPromise = new Promise((resolve) => {
+		resolveEntitiesPromise = resolve;
+	});
 
-let entitiesAsMapPromise = new Promise((resolve) => {
-	resolveEntitiesAsMapPromise = resolve;
-});
+	entitiesAsMapPromise = new Promise((resolve) => {
+		resolveEntitiesAsMapPromise = resolve;
+	});
 
-let tagsPromise = new Promise((resolve) => {
-	resolveTagsPromise = resolve;
-});
+	tagsPromise = new Promise((resolve) => {
+		resolveTagsPromise = resolve;
+	});
+
+	kindsPromise = new Promise((resolve) => {
+		resolveKindsPromise = resolve;
+	});
+}
 
 module.exports = {
-	init() {
-		return getDatabase
-			.then(({ getData }) => getData(root).then(({ entities, tags }) => {
-					resolveTagsPromise(tags);
-					resolveEntitiesPromise(entities);
-					resolveEntitiesAsMapPromise(true);
-				}));
+	async init() {
+		reset();
+		let { getData } = await getDatabase;
+		let { entities, tags, kinds } = await getData(root);
+		resolveTagsPromise(tags);
+		resolveKindsPromise(kinds);
+		resolveEntitiesPromise(entities);
+		resolveEntitiesAsMapPromise(true);
 	},
 	getAllTags() {
 		return tagsPromise;
 	},
+	getAllKinds() {
+		return kindsPromise;
+	},
 	getAllEntities() {
 		return entitiesPromise;
+	},
+	searchEntities(filters) {
+		return Promise.all([
+			entitiesPromise,
+			tagsPromise,
+			kindsPromise,
+			getSearch
+		]).then(([entities, tags, kinds, { searchEntities }]) => searchEntities({
+			entities,
+			tags,
+			kinds,
+			filters
+		}));
 	},
 	getEntity(id) {
 		return Promise.all([getDatabase, entitiesAsMapPromise])

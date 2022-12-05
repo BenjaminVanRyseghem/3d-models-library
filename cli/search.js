@@ -17,24 +17,26 @@ export default async function search(opts) {
 
 	let dbData = await getData(opts.root);
 
-	if (opts.tag && opts.tag.length === 1) {
-		return output(fuzzyMatchName(dbData.tags[opts.tag[0]], opts.name));
+	return searchEntities({
+		entities: dbData.entities,
+		tags: dbData.tags,
+		kinds: dbData.kinds,
+		filters: opts,
+		output
+	});
+}
+
+export function searchEntities({ entities, filters, output = (result) => result }) {
+	if (filters.tag?.length || filters.kind?.length) {
+		return output(fuzzyMatchName(filterEntities(entities, {
+			tags: filters.tag,
+			kinds: filters.kind
+		}), filters.name));
 	}
 
-	if (opts.kind && opts.kind.length === 1) {
-		return output(fuzzyMatchName(dbData.kinds[opts.kind[0]], opts.name));
+	if (filters.name) {
+		return output(fuzzyMatchName(flattenEntities(entities), filters.name));
 	}
 
-	if (opts.tag || opts.kind) {
-		return output(fuzzyMatchName(filterEntities(dbData.entities, {
-			tags: opts.tag,
-			kinds: opts.kind
-		}), opts.name));
-	}
-
-	if (opts.name) {
-		return output(fuzzyMatchName(flattenEntities(dbData.entities), opts.name));
-	}
-
-	return output(dbData.entities);
+	return output(entities);
 }

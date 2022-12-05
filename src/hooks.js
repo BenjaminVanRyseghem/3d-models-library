@@ -4,7 +4,7 @@ export function useElectronAPI() {
 	return window.electronAPI;
 }
 
-export function useElectronAPIPromise(fn) {
+export function useElectronAPIPromiseOld(fn) { // I would like to understand why it fails
 	let { electronAPI } = window;
 
 	let promise = useMemo(() => fn(electronAPI), [fn, electronAPI]);
@@ -26,4 +26,23 @@ export function useElectronAPIPromise(fn) {
 	}, [promise, setResult]);
 
 	return result;
+}
+
+export function useElectronAPIPromise(fn, cb, token = 0) {
+	let { electronAPI } = window;
+
+	useEffect(() => {
+		let isCancelled = false;
+
+		fn(electronAPI).then((data) => {
+			if (isCancelled) {
+				return;
+			}
+			cb(data);
+		});
+
+		return () => {
+			isCancelled = true;
+		};
+	}, [fn, cb, electronAPI, token]);
 }

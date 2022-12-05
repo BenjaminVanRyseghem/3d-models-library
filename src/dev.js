@@ -36,7 +36,8 @@ if (!window.electronAPI && process.env.NODE_ENV === "development") {
 
 	window.electronAPI = {
 		setTitle: () => Promise.resolve(),
-		getAllTags: () => Promise.resolve([]),
+		getAllTags: () => Promise.resolve({}),
+		getAllAvailableTags: () => Promise.resolve([]),
 		getAllEntities: () => loadData,
 		getEntity: (id) => loadData.then((data) => findEntity(id, data)),
 		writeEntityFile({ answers, folderPath, pictures }) {
@@ -50,6 +51,9 @@ if (!window.electronAPI && process.env.NODE_ENV === "development") {
 				resolve();
 			}, 1000));
 		},
+		getStlContent: () => Promise.resolve(undefined),
+		reloadEntitiesDB: () => Promise.resolve(undefined),
+		editConfigFile: () => Promise.resolve(undefined),
 		selectFolder: () => new Promise((resolve) => {
 			setTimeout(() => {
 				resolve({

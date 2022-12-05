@@ -1,7 +1,7 @@
 import "./import.css";
 import { importPageName } from "variables.js";
 import { Layout } from "antd";
-import { useElectronAPI } from "hooks.js";
+import { useElectronAPI, useElectronAPIPromise } from "hooks.js";
 import { useNavigate } from "react-router-dom";
 import ChooseCover from "./steps/chooseCover.js";
 import ChooseKind from "./steps/chooseKind.js";
@@ -14,9 +14,12 @@ import NoModels from "./steps/noModels.js";
 import PageHeader from "components/pageHeader/pageHeader.js";
 import React, { useEffect, useState } from "react";
 import SelectFolder from "./steps/selectFolder.js";
+import SelectPreview from "pages/import/steps/selectPreview.js";
 import Summary from "./steps/summary.js";
 import WizardFooter from "components/wizardFooter/wizardFooter.js";
 import WizardWithError from "components/wizardWithError/wizardWithError.js";
+
+const getAllAvailableTags = (api) => api.getAllAvailableTags();
 
 const pathSep = "/"; // todo: fix it for windows
 const supportedRegex = /(?<!un)(?<!not )supported/i;
@@ -40,6 +43,9 @@ export default function Import() {
 	let electronAPI = useElectronAPI();
 	let navigate = useNavigate();
 	let [info, setInfo] = useState(initialInfoState);
+	let [allAvailableTags, setAllAvailableTags] = useState([]);
+
+	useElectronAPIPromise(getAllAvailableTags, setAllAvailableTags);
 
 	useEffect(() => {
 		electronAPI.setTitle(importPageName);
@@ -82,6 +88,7 @@ export default function Import() {
 							folderPath: info.folderPath,
 							pictures: info.pictures.map((each) => ({ name: each }))
 						}).then(({ id }) => {
+							electronAPI.reloadEntitiesDB();
 							navigate(`/entity/${id}`);
 						})}/>}
 						wrapper={<div className="import-wizard-step"/>}
@@ -102,9 +109,18 @@ export default function Import() {
 								pictures={info.pictures}
 								setCover={handleChange("cover")}
 							/>}
+						{!info.pictures?.length && info.models?.length &&
+							<SelectPreview
+								setPreview={handleChange("preview")}
+								stlFiles={info.models.map((fileName) => ({
+									label: fileName.name,
+									path: `${info.folderPath}${pathSep}${fileName.name}`
+								}))}
+							/>
+						}
 						<ChooseName name={info.name} setName={handleChange("name")}/>
 						<ChooseKind kind={info.kind} setKind={handleChange("kind")}/>
-						<ChooseTags setTags={handleChange("tags")} tags={info.tags}/>
+						<ChooseTags allAvailableTags={allAvailableTags} setTags={handleChange("tags")} tags={info.tags}/>
 						<ChooseTypes setTypes={handleChange("types")} types={info.types}/>
 						<Summary info={info}/>
 					</WizardWithError>
@@ -129,7 +145,7 @@ function extractNameFromFolderPath(folderPath) {
 
 function extractGuessableTypes({ models, folderPath }) {
 	if (!models?.length) {
-		return isSupported({ name: folderPath });
+		return isSupported({ name: folderPath }) ? ["supported"] : [];
 	}
 	let result = new Set();
 	models.forEach((model) => {
