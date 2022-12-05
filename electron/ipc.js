@@ -56,7 +56,12 @@ ipcMain.handle("getAllAvailableTags", () => loadState.getAllTags().then((tagsMap
 	tags.sort();
 	return tags;
 }));
-ipcMain.handle("getAllEntities", () => loadState.getAllEntities());
+ipcMain.handle("getAllAvailableKinds", () => loadState.getAllKinds().then((kindsMap) => {
+	let kinds = Object.keys(kindsMap);
+	kinds.sort();
+	return kinds;
+}));
+ipcMain.handle("getAllEntities", (event, filters) => loadState.searchEntities(filters));
 ipcMain.handle("getEntity", (event, id) => loadState.getEntity(id));
 ipcMain.handle("writeEntityFile", async (event, { answers, folderPath, pictures }) => {
 	let [{ writeEntityFile }, { getData, resolveParenthood }, { compress }] = await Promise.all([

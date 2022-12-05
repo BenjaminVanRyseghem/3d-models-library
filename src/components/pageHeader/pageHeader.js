@@ -1,5 +1,5 @@
 import { LeftCircleOutlined } from "@ant-design/icons";
-import { PageHeader as RawPageHeader } from "antd";
+import { PageHeader as RawPageHeader } from "@ant-design/pro-layout";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import React from "react";

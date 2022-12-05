@@ -28,11 +28,19 @@ function createWindow() {
 			preload: path.join(__dirname, "electron", "preload.js")
 		}
 	});
-	// eslint-disable-next-line no-console,no-process-env
-	console.log("process.env.ELECTRON_START_URL", process.env.ELECTRON_START_URL);
+
+	mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+		callback({
+			responseHeaders: {
+				...details.responseHeaders,
+				"Content-Security-Policy": ["default-src 'self' resource: ; style-src 'self' 'unsafe-inline' "]
+			}
+		});
+	});
+
 	// eslint-disable-next-line no-process-env
 	const startUrl = process.env.ELECTRON_START_URL || url.format({
-		pathname: path.join(__dirname, "/../build/index.html"),
+		pathname: path.join(__dirname, "build/index.html"),
 		protocol: "file:",
 		slashes: true
 	});

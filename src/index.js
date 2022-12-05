@@ -1,8 +1,8 @@
 import "./dev.js";
-import "antd/dist/antd.css";
+import "antd/dist/reset.css";
 import "index.css";
 import {
-	BrowserRouter,
+	HashRouter,
 	Route,
 	Routes
 } from "react-router-dom";
@@ -16,17 +16,30 @@ import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
-root.render(<BrowserRouter>
+root.render(<HashRouter>
 	<Routes>
-		<Route element={<Layout/>} path="/">
-			<Route index element={<Home/>}/>
-			<Route index element={<Import/>} path="import"/>
+		<Route
+			element={<Layout/>}
+			path="/"
+		>
+			<Route
+				index
+				element={<Home/>}
+			/>
+			<Route
+				index
+				element={<Import/>}
+				path="import"
+			/>
 			<Route path="entity">
-				<Route element={<Entity/>} path=":id"/>
+				<Route
+					element={<Entity/>}
+					path=":id"
+				/>
 			</Route>
 		</Route>
 	</Routes>
-</BrowserRouter>);
+            </HashRouter>);
 
 /*
  * If you want to start measuring performance in your app, pass a function
