@@ -1,7 +1,7 @@
 // eslint-disable-next-line filenames/match-exported
 const root = "/Users/benjamin/Documents/3d models/stl";
-let getDatabase = import("../cli/database.js");
-let getSearch = import("../cli/search.js");
+let { getData, getEntity} = require("../cli/database.js");
+let { searchEntities } = require("../cli/search.js");
 
 let resolveEntitiesPromise = () => {};
 let resolveEntitiesAsMapPromise = () => {};
@@ -34,7 +34,6 @@ function reset() {
 module.exports = {
 	async init() {
 		reset();
-		let { getData } = await getDatabase;
 		let { entities, tags, kinds } = await getData(root);
 		resolveTagsPromise(tags);
 		resolveKindsPromise(kinds);
@@ -55,8 +54,7 @@ module.exports = {
 			entitiesPromise,
 			tagsPromise,
 			kindsPromise,
-			getSearch
-		]).then(([entities, tags, kinds, { searchEntities }]) => searchEntities({
+		]).then(([entities, tags, kinds]) => searchEntities({
 			entities,
 			tags,
 			kinds,
@@ -64,7 +62,7 @@ module.exports = {
 		}));
 	},
 	getEntity(id) {
-		return Promise.all([getDatabase, entitiesAsMapPromise])
-			.then(([{ getEntity }]) => getEntity(id));
+		return entitiesAsMapPromise
+			.then(() => getEntity(id));
 	}
 };

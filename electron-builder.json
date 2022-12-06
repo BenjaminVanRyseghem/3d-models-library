@@ -1,0 +1,95 @@
+{
+  "appId": "com.vanryseghem.benjamin.3d-model-library",
+  "productName": "3d Model Library",
+  "copyright": "Copyright © 2022 ${author}",
+  "directories": {
+    "buildResources": "assets"
+  },
+  "mac": {
+    "target": {
+      "target": "zip",
+      "arch": [
+        "x64",
+        "arm64"
+      ]
+    },
+    "category": "public.app-category.productivity",
+    "icon": "app/resources/img/icon.png",
+    "extraResources":  [
+      {
+        "from": "./app/src/helper/audio.mp3",
+        "to": "audio.mp3"
+      }
+    ],
+    "extraFiles": [
+      {
+        "from": "./sand-glass",
+        "to": "MacOS/sand-glass"
+      }
+    ]
+  },
+  "linux": {
+    "target": [
+      "zip"
+    ],
+    "icon": "app/resources/img/icon.png",
+    "category": "Utility",
+    "extraResources": [
+      {
+        "from": "./app/src/helper/audio.mp3",
+        "to": "audio.mp3"
+      }
+    ],
+    "extraFiles": [
+      {
+        "from": "./sand-glass",
+        "to": "bin/sand-glass"
+      }
+    ]
+  },
+  "win": {
+    "icon": "app/resources/img/icon.png",
+    "extraResources": [
+      {
+        "from": "./app/src/helper/audio.mp3",
+        "to": "audio.mp3"
+      }
+    ],
+    "extraFiles": [
+      {
+        "from": "./sand-glass",
+        "to": "bin/sand-glass"
+      }
+    ]
+  },
+  "dmg": {
+    "icon": "app/resources/img/sandGlass.icns",
+    "background": "app/resources/img/background.png",
+    "contents": [
+      {
+        "x": 140,
+        "y": 100,
+        "type": "file",
+        "name": "SandGlass.app"
+      },
+      {
+        "x": 310,
+        "y": 100,
+        "type": "link",
+        "path": "/Applications"
+      },
+      {
+        "x": 140,
+        "y": 240,
+        "type": "file",
+        "path": "sand-glass"
+      },
+      {
+        "x": 310,
+        "y": 240,
+        "type": "link",
+        "path": "/usr/local/bin"
+      }
+    ]
+  }
+}

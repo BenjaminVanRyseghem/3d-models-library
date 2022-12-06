@@ -1,4 +1,4 @@
-const jestConfig = require("./jest.config");
+const jestConfig = require("client/jest.config.js");
 const webpackConfig = require("./webpack.config");
 
 function forEachPcssLoader(config, cb) {

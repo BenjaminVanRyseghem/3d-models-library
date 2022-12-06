@@ -10,6 +10,7 @@ node_modules
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
@@ -21,3 +22,10 @@ node_modules
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# cache
+cache
+asar/
+/app/resources/css/
+
+app/resources/front

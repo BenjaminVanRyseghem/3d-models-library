@@ -1,7 +1,7 @@
-import { getData, version } from "./database.js";
-import { jsonFileName } from "./constants.js";
-import { writeFile } from "fs/promises";
-import path from "path";
+const { getData, version } = require("./database.js");
+const { jsonFileName } = require("./constants.js");
+const { writeFile } = require("fs/promises");
+const path = require("path");
 
 const migrationTable = {
 	1: (entity) => {
@@ -13,12 +13,12 @@ const migrationTable = {
 	}
 };
 
-export default async function migrate(opts) {
+module.exports = async function migrate(opts) {
 	let dbData = await getData(opts.root);
 	return Promise.all(dbData.entities.map((entity) => migrateEntity({ entity })));
 }
 
-export async function migrateEntity({ entity: oldEntity, preventTraverse = false }) {
+module.exports.migrateEntity = async function migrateEntity({ entity: oldEntity, preventTraverse = false }) {
 	let entity = await applyMigrations(oldEntity);
 
 	if (!preventTraverse) {

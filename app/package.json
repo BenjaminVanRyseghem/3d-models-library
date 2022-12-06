@@ -2,11 +2,15 @@
   "name": "app",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Benjamin Van Ryseghem <benjamin.vanryseghem@gmail.com> (https://benjamin.vanryseghem.com/)",
   "license": "ISC",
-  "dependencies": {}
+  "dependencies": {
+    "fuse.js": "^6.6.2",
+    "mime-types": "^2.1.35",
+    "uuid": "^9.0.0"
+  }
 }

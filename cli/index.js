@@ -1,7 +1,7 @@
 import { Command } from "commander";
 import importFolder from "./importFolder.js";
-import migrate from "./migrate.js";
-import search from "./search.js";
+import migrate from "../app/src/cli/migrate.js";
+import search from "../app/src/cli/search.js";
 
 function wrapCommand(command) {
 	return async (...args) => {

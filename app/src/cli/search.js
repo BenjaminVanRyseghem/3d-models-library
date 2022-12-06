@@ -1,6 +1,6 @@
-import { filterEntities, fuzzyMatchName } from "./filterEntities.js";
-import { getData } from "./database.js";
-import buildOutput from "./output.js";
+const { filterEntities, fuzzyMatchName } = require("./filterEntities.js");
+const { getData } = require("./database.js");
+const buildOutput = require("./output.js");
 
 function flattenEntities(entities) {
 	let result = [];
@@ -12,7 +12,7 @@ function flattenEntities(entities) {
 	return result;
 }
 
-export default async function search(opts) {
+module.exports = async function search(opts) {
 	let output = buildOutput(opts);
 
 	let dbData = await getData(opts.root);
@@ -26,7 +26,7 @@ export default async function search(opts) {
 	});
 }
 
-export function searchEntities({ entities, filters, output = (result) => result }) {
+module.exports.searchEntities = function searchEntities({ entities, filters, output = (result) => result }) {
 	if (filters.tag?.length || filters.kind?.length) {
 		return output(fuzzyMatchName(filterEntities(entities, {
 			tags: filters.tag,

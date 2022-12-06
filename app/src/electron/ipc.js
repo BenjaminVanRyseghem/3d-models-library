@@ -1,5 +1,5 @@
 const { app, BrowserWindow, ipcMain, dialog, protocol, shell } = require("electron");
-const loadState = require("./loadState");
+const loadState = require("./loadState.js");
 const { readdir, readFile } = require("fs/promises");
 const path = require("path");
 

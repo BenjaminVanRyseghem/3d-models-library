@@ -37,6 +37,7 @@ if (!window.electronAPI && process.env.NODE_ENV === "development") {
 	window.electronAPI = {
 		setTitle: () => Promise.resolve(),
 		getAllTags: () => Promise.resolve({}),
+		getAllAvailableKinds: () => Promise.resolve([]),
 		getAllAvailableTags: () => Promise.resolve([]),
 		getAllEntities: () => loadData,
 		getEntity: (id) => loadData.then((data) => findEntity(id, data)),

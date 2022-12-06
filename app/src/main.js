@@ -3,7 +3,7 @@ require("./electron/ipc.js");
 const electron = require("electron");
 const path = require("path");
 const url = require("url");
-const loadState = require("./electron/loadState");
+const loadState = require("./electron/loadState.js");
 
 const { app } = electron;
 
@@ -40,7 +40,7 @@ function createWindow() {
 
 	// eslint-disable-next-line no-process-env
 	const startUrl = process.env.ELECTRON_START_URL || url.format({
-		pathname: path.join(__dirname, "build/index.html"),
+		pathname: path.join(__dirname, "..", "resources", "front", "index.html"),
 		protocol: "file:",
 		slashes: true
 	});

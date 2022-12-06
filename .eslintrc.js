@@ -1,4 +1,4 @@
-/* eslint-disable no-process-env,no-nested-ternary,filenames/match-regex */
+e/* eslint-disable no-process-env,no-nested-ternary,filenames/match-regex */
 module.exports = {
 	parser: "@babel/eslint-parser",
 	parserOptions: {

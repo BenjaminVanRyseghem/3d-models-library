@@ -1,8 +1,8 @@
-import { mkdir, readFile, writeFile } from "fs/promises";
-import mime from "mime-types";
-import path from "path";
+const { mkdir, readFile, writeFile } = require("fs/promises");
+const mime = require("mime-types");
+const path = require("path");
 
-export default function output({ human: humanReadable, export: exportOutput }) {
+module.exports = function output({ human: humanReadable, export: exportOutput }) {
 	if (exportOutput) {
 		return buildExportOutput(exportOutput);
 	}

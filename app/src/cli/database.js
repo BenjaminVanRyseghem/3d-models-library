@@ -1,15 +1,19 @@
-import { jsonFileName } from "./constants.js";
-import { migrateEntity } from "./migrate.js";
-import { readdir, readFile, writeFile } from "fs/promises";
-import { v4 as uuidv4 } from "uuid";
-import path, { dirname, resolve, sep } from "path";
+const { jsonFileName } = require("./constants.js");
+const { readdir, readFile, writeFile } = require("fs/promises");
+const { v4: uuidv4 } = require("uuid");
+const path = require("path");
 
-export const version = 2;
+const { dirname, resolve, sep } = path;
+
 const entitiesMap = {};
 const pathToEntity = {};
 
+module.exports = {}
+const version = 2;
+module.exports.version = version;
+
 // eslint-disable-next-line max-statements
-export async function getData(dir) {
+async function getData(dir) {
 	let newTags = {};
 	let newKinds = {};
 	let dirents = await readdir(dir, { withFileTypes: true });
@@ -74,11 +78,13 @@ export async function getData(dir) {
 	};
 }
 
-export function getEntity(id) {
+module.exports.getData = getData;
+
+module.exports.getEntity = function getEntity(id) {
 	return entitiesMap[id];
 }
 
-export function resolveParenthood({ folderPath, entity }) {
+module.exports.resolvParenthood = function resolveParenthood({ folderPath, entity }) {
 	let parentEntity = getParentEntity({ folderPath });
 	if (!parentEntity) {
 		return;
@@ -107,6 +113,7 @@ function buildEntity({ data, dir, tags, kinds }) {
 	}
 
 	if (data.version < version) {
+		const { migrateEntity } = require("./migrate.js");
 		return migrateEntity({
 			entity: data,
 			preventTraverse: true

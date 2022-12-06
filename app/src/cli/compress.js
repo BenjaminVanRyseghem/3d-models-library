@@ -1,7 +1,7 @@
-import { readdir } from "fs/promises";
-import path from "path";
-import trash from "trash";
-import Zip from "adm-zip";
+const { readdir } = require("fs/promises");
+const path = require("path");
+const trash = require("trash");
+const Zip = require("adm-zip");
 
 const modelExtensions = [".stl", ".lys", ".ctb", ".obj"];
 const textExtensions = [".md", ".txt", ".info"];
@@ -13,7 +13,9 @@ const allowedExtensions = [
 	...pictureExtensions
 ];
 
-export async function compress({ folder, name, deleteFiles = false }) {
+module.exports = {};
+
+module.exports.compress = async function compress({ folder, name, deleteFiles = false }) {
 	let zip = new Zip();
 	let dirents = await readdir(folder, { withFileTypes: true });
 	let toRemove = [];

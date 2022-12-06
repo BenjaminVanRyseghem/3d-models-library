@@ -1,13 +1,15 @@
-import Fuse from "fuse.js";
+const Fuse = require("fuse.js");
 
-export function filterEntities(entities, { tags, kinds }) {
+module.exports = {};
+
+module.exports.filterEntities = function filterEntities(entities, { tags, kinds }) {
 	return innerFilterEntities(entities, {
 		tags,
 		kinds
 	});
 }
 
-export function fuzzyMatchName(entities, name) {
+module.exports.fuzzyMatchName = function fuzzyMatchName(entities, name) {
 	if (!name) {
 		return entities;
 	}

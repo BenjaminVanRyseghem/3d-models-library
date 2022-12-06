@@ -92,7 +92,10 @@ export function SearchForm({ kinds, tags, onChange = () => {} }) {
 			<Form.Item>
 				<Button
 					type="secondary"
-					onClick={() => form.resetFields()}
+					onClick={() => {
+						form.resetFields();
+						form.submit();
+					}}
 				>
 					Reset
 				</Button>
