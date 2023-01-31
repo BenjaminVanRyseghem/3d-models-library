@@ -171,7 +171,7 @@ export async function writeEntityFile({ answers, folderPath, pictures }) {
 		data.archive = `${answers.name}.zip`;
 	}
 
-	if (!data.pictures.length) {
+	if (!data.pictures.length && answers.preview) {
 		let name = `${data.name}.png`;
 		let previewPath = path.resolve(folderPath, name);
 		await writeFile(previewPath, Buffer.from(answers.preview));

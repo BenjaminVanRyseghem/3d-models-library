@@ -90,11 +90,15 @@ export default function Import() {
 						}).then(({ id }) => {
 							electronAPI.reloadEntitiesDB();
 							navigate(`/entity/${id}`);
-						})}/>}
+						})}
+						/>}
 						wrapper={<div className="import-wizard-step"/>}
 					>
 						<Introduction/>
-						<SelectFolder info={info} setInfo={setFolderInfo}/>
+						<SelectFolder
+							info={info}
+							setInfo={setFolderInfo}
+						/>
 						{!info.models?.length && <NoModels
 							confirmNoModel={info.confirmNoModel}
 							setConfirmNoModel={handleChange("confirmNoModel")}
@@ -109,7 +113,7 @@ export default function Import() {
 								pictures={info.pictures}
 								setCover={handleChange("cover")}
 							/>}
-						{!info.pictures?.length && info.models?.length &&
+						{!info.pictures?.length && !!info.models?.length &&
 							<SelectPreview
 								setPreview={handleChange("preview")}
 								stlFiles={info.models.map((fileName) => ({
@@ -118,10 +122,23 @@ export default function Import() {
 								}))}
 							/>
 						}
-						<ChooseName name={info.name} setName={handleChange("name")}/>
-						<ChooseKind kind={info.kind} setKind={handleChange("kind")}/>
-						<ChooseTags allAvailableTags={allAvailableTags} setTags={handleChange("tags")} tags={info.tags}/>
-						<ChooseTypes setTypes={handleChange("types")} types={info.types}/>
+						<ChooseName
+							name={info.name}
+							setName={handleChange("name")}
+						/>
+						<ChooseKind
+							kind={info.kind}
+							setKind={handleChange("kind")}
+						/>
+						<ChooseTags
+							allAvailableTags={allAvailableTags}
+							setTags={handleChange("tags")}
+							tags={info.tags}
+						/>
+						<ChooseTypes
+							setTypes={handleChange("types")}
+							types={info.types}
+						/>
 						<Summary info={info}/>
 					</WizardWithError>
 				</div>
