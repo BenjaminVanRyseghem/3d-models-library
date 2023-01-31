@@ -26,7 +26,12 @@ export async function compress({ folder, name, deleteFiles = false }) {
 		if (!isPicture(dirent)) {
 			toRemove.push(fullPath);
 		}
-		zip.addLocalFile(fullPath);
+
+		if (dirent.isFile()) {
+			zip.addLocalFile(fullPath);
+		} else {
+			zip.addLocalFolder(fullPath);
+		}
 	});
 
 	await zip.writeZipPromise(path.resolve(folder, `${name}.zip`));
@@ -56,5 +61,5 @@ function isCompressible(dirent) {
 		return allowedExtensions.indexOf(ext) !== -1;
 	}
 
-	return false; // do go recursive, for now at least?
+	return true;
 }
