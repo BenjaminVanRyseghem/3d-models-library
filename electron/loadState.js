@@ -1,5 +1,5 @@
 // eslint-disable-next-line filenames/match-exported
-const root = "/Users/benjamin/Documents/3d models/stl";
+const root = "/Users/benjamin/Documents/3d models";
 let getDatabase = import("../cli/database.js");
 let getSearch = import("../cli/search.js");
 
