@@ -5,11 +5,12 @@
 
   & .tags-form-item {
     flex: 1 0 auto;
-    height: calc(100% - 280px);
+    height: calc(100% - 300px);
 
     & > .ant-row {
       display: block;
       height: 100%;
+      overflow-y: auto;
 
       &.ant-col:last-of-type {
         height: calc(100% - 20px);

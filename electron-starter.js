@@ -22,7 +22,9 @@ function createWindow() {
 	// Create the browser window.
 	mainWindow = new BrowserWindow({
 		width: 1100,
-		height: 800,
+		minWidth: 1100,
+		height: 850,
+		minHeight: 850,
 		webPreferences: {
 			nodeIntegration: true,
 			preload: path.join(__dirname, "electron", "preload.js")
@@ -33,7 +35,9 @@ function createWindow() {
 		callback({
 			responseHeaders: {
 				...details.responseHeaders,
-				"Content-Security-Policy": ["default-src 'self' resource: ; style-src 'self' 'unsafe-inline' "]
+				"Content-Security-Policy": [
+					"default-src 'self' resource: ; style-src 'self' 'unsafe-inline'; connect-src 'self' blob:; img-src 'self' blob: resource:"
+				]
 			}
 		});
 	});
@@ -46,8 +50,11 @@ function createWindow() {
 	});
 	mainWindow.loadURL(startUrl);
 
-	// Open the DevTools.
-	mainWindow.webContents.openDevTools();
+	// eslint-disable-next-line no-process-env
+	if (process.env.ELECTRON_START_URL) {
+		// Open the DevTools.
+		mainWindow.webContents.openDevTools();
+	}
 
 	// Emitted when the window is closed.
 	mainWindow.on("closed", () => {
