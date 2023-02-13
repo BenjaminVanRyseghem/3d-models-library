@@ -115,6 +115,7 @@ ipcMain.handle("selectFolder", async (event) => {
 ipcMain.handle("getStlContent", (event, filePath) => readFile(filePath));
 ipcMain.handle("reloadEntitiesDB", () => loadState.init());
 ipcMain.handle("editConfigFile", (event, folderPath) => shell.openPath(path.resolve(folderPath, ".3d-model-entity.json")));
+ipcMain.handle("openFolder", (event, folderPath) => shell.openPath(folderPath));
 
 app.whenReady().then(() => {
 	protocol.registerFileProtocol("resource", (req, callback) => {

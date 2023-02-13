@@ -1,7 +1,7 @@
 import "pages/entity/entity.css";
 import { Button, Col, Descriptions, Layout, Row, Skeleton } from "antd";
 import { defaultAppName } from "variables.js";
-import { EditOutlined, PictureOutlined } from "@ant-design/icons";
+import { EditOutlined, FolderOpenOutlined, PictureOutlined } from "@ant-design/icons";
 import { func, node, object } from "prop-types";
 import { resolveEntityPicture } from "helpers.js";
 import { useElectronAPI, useElectronAPIPromise } from "hooks.js";
@@ -29,13 +29,28 @@ export default function Entity() {
 	if (!entity) {
 		return (
 			<InnerContent
-				cover={<Skeleton.Image active className="cover-img empty"/>}
-				info={<Skeleton active size="large"/>}
+				cover={<Skeleton.Image
+					active
+					className="cover-img empty"
+				/>}
+				info={<Skeleton
+					active
+					size="large"
+				/>}
 				title={"Loading the entity"}
 			>
-				<Skeleton.Node active className="empty card"/>
-				<Skeleton.Node active className="empty card"/>
-				<Skeleton.Node active className="empty card"/>
+				<Skeleton.Node
+					active
+					className="empty card"
+				/>
+				<Skeleton.Node
+					active
+					className="empty card"
+				/>
+				<Skeleton.Node
+					active
+					className="empty card"
+				/>
 			</InnerContent>
 		);
 	}
@@ -49,9 +64,12 @@ export default function Entity() {
 			setEntity={setEntity}
 			setEntityToken={setEntityToken}
 		>
-			{children.map((child) => <Col key={child.id} span={6}>
+			{children.map((child) => (<Col
+				key={child.id}
+				span={6}
+			>
 				<EntityCard entity={child}/>
-			</Col>)}
+                             </Col>))}
 		</InnerContent>
 	);
 }
@@ -61,7 +79,10 @@ function InnerContent({
 	setEntity,
 	setEntityToken,
 	title = entity.name,
-	cover = <EntityPicture full entity={entity}/>,
+	cover = <EntityPicture
+		full
+		entity={entity}
+	/>,
 	info = <Info entity={entity}/>,
 	children
 }) {
@@ -72,17 +93,30 @@ function InnerContent({
 			<PageHeader
 				entity={entity}
 				extra={[
-					<NavigationActions key="actions" refresh={() => {
-						setEntity(null);
-						setEntityToken((token) => token + 1);
-					}}/>,
+					<NavigationActions
+						key="actions"
+						refresh={() => {
+							setEntity(null);
+							setEntityToken((token) => token + 1);
+						}}
+					/>,
+					<Button
+						key="open"
+						icon={<FolderOpenOutlined/>}
+						onClick={() => {
+							electronAPI.openFolder(entity.path);
+						}}
+					>
+						Open
+					</Button>,
 					<Button
 						key="edit"
 						icon={<EditOutlined/>}
 						type="link"
 						onClick={() => {
 							electronAPI.editConfigFile(entity.path);
-						}}>
+						}}
+					>
 						Edit
 					</Button>
 				]}
@@ -93,7 +127,10 @@ function InnerContent({
 					{cover}
 				</div>
 				{info}
-				<Row className="children" gutter={[16, 16]}>
+				<Row
+					className="children"
+					gutter={[16, 16]}
+				>
 					{children}
 				</Row>
 			</Layout.Content>
@@ -104,12 +141,18 @@ function InnerContent({
 function Info({ entity }) {
 	return (
 		<div className="entity-info">
-			<Descriptions bordered column={2}>
+			<Descriptions
+				bordered
+				column={2}
+			>
 				<Descriptions.Item label="Kind">{entity.kind}</Descriptions.Item>
 				{entity.tags && entity.tags.length &&
 					<Descriptions.Item label="Tags">{entity.tags.join(", ")}</Descriptions.Item>}
 				{entity.types && <Descriptions.Item label="Types">{entity.types.join(", ")}</Descriptions.Item>}
-				{entity.pictures && <Descriptions.Item label="Pictures" span={2}>
+				{entity.pictures && <Descriptions.Item
+					label="Pictures"
+					span={2}
+				>
 					<div className="pictures">
 						<ImagePreviewGroup
 							sources={
@@ -121,7 +164,7 @@ function Info({ entity }) {
 							title={<PictureOutlined/>}
 						/>
 					</div>
-				</Descriptions.Item>}
+                        </Descriptions.Item>}
 			</Descriptions>
 		</div>
 	);

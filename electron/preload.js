@@ -2,6 +2,7 @@ const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("electronAPI", {
 	editConfigFile: (...args) => ipcRenderer.invoke("editConfigFile", ...args),
+	openFolder: (...args) => ipcRenderer.invoke("openFolder", ...args),
 	getAllAvailableKinds: (...args) => ipcRenderer.invoke("getAllAvailableKinds", ...args),
 	getAllAvailableTags: (...args) => ipcRenderer.invoke("getAllAvailableTags", ...args),
 	getAllEntities: (...args) => ipcRenderer.invoke("getAllEntities", ...args),

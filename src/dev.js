@@ -54,6 +54,7 @@ if (!window.electronAPI && process.env.NODE_ENV === "development") {
 		getStlContent: () => Promise.resolve(undefined),
 		reloadEntitiesDB: () => Promise.resolve(undefined),
 		editConfigFile: () => Promise.resolve(undefined),
+		openFolder: () => Promise.resolve(undefined),
 		selectFolder: () => new Promise((resolve) => {
 			setTimeout(() => {
 				resolve({
