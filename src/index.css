@@ -1,13 +1,68 @@
+@import "~line-awesome/dist/line-awesome/css/line-awesome.min.css";
+@import "./fix-ant.css";
+
+:root {
+  --background-color-h: 220;
+  --background-color-s: 13%;
+  --background-color-l: 18%;
+  --background-color: hsl(var(--background-color-h), var(--background-color-s), var(--background-color-l));
+
+  --color-h: 0;
+  --color-s: 0%;
+  --color-l: 90%;
+  --color: hsl(var(--color-h), var(--color-s), var(--color-l));
+
+  --page-padding: 0 40px 40px 40px;
+
+  --light1: #e6f7ff;
+  --light2: #bae7ff;
+  --light3: #91d5ff;
+  --light4: #69c0ff;
+  --light5: #40a9ff;
+
+  --dark1: #002766;
+  --dark2: #003a8c;
+  --dark3: #0050b3;
+  --dark4: #096dd9;
+  --dark5: #1890ff;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  background-color: var(--background-color);
+  min-height: 100vh;
+  //font-size: calc(10px + 2vmin);
+  font-size: 22px;
+  color: var(--color);
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  monospace;
+}
+
+img.cover-fit {
+  object-fit: cover;
+  height: 100% !important;
+  width: 100%;
+}
+
+img.cover-contain {
+  object-fit: contain;
+  height: 100%;
+  width: 100%;
+}
+
+#root, .layout, .page {
+  height: 100%;
+}
+
+section {
+  width: 100%;
 }

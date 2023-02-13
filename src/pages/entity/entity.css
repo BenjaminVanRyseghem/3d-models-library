@@ -1,0 +1,67 @@
+.entity {
+  & .cover {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+
+    & .cover-img {
+      height: 300px;
+      top: 0;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+
+      &.empty {
+        width: 450px;
+      }
+    }
+
+    margin-bottom: 1em;
+  }
+
+  & .name {
+    text-align: center;
+  }
+
+  & .card.empty {
+    width: 300px;
+    height: 300px;
+
+    & span svg {
+      visibility: hidden;
+      display: none;
+    }
+  }
+
+  & .entity-info {
+    margin-bottom: 20px;
+
+    & .ant-descriptions-view,
+    & .ant-descriptions-item-label,
+    & .ant-descriptions-item-content,
+    & .ant-descriptions-row {
+      border-color: var(--color);
+    }
+
+    & .ant-descriptions-row:after {
+      content: " ";
+      height: 4px;
+      background: red;
+      width: 100%;
+    }
+
+    & .ant-descriptions-item-label {
+      font-weight: bold;
+      background-color: var(--color);
+    }
+
+    & .pictures {
+      display: flex;
+      gap: 10px;
+
+      & .ant-image {
+        width: 0;
+      }
+    }
+  }
+}
